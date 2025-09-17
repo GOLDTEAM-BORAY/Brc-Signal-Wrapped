@@ -26,7 +26,7 @@ extern "C" {
 	/// <param name="maxOrder">最大阶次</param>
 	/// <param name="orderResolution">阶次分辨率</param>
 	/// <param name="rpmStep">转速步长</param>
-	/// <param name="windowType">加窗类型</param>
+	/// <param name="windowType">窗函数类型 0-矩形窗 1-汉宁窗</param>
 	/// <param name="colormapData">返回阶次数据</param>
 	/// <param name="orderBins">阶次轴分段数</param>
 	/// <param name="rpmBins">转速轴分段数</param>
@@ -36,32 +36,31 @@ extern "C" {
 	/// <summary>
 	/// 计算时间频率色谱图
 	/// </summary>
-	/// <param name="signalNative"></param>
-	/// <param name="rpmNative"></param>
-	/// <param name="windowType"></param>
-	/// <param name="spectrumLines"></param>
-	/// <param name="overlap"></param>
-	/// <param name="startTime"></param>
-	/// <param name="endTime"></param>
-	/// <param name="colormapData"></param>
-	/// <param name="timeBins"></param>
-	/// <param name="frequencyBins"></param>
+	/// <param name="signalNative">信号结构体描述</param>
+	/// <param name="windowType">窗函数类型 0-矩形窗 1-汉宁窗</param>
+	/// <param name="spectrumLines">谱线数</param>
+	/// <param name="overlap">重叠率</param>
+	/// <param name="startTime">开始时间</param>
+	/// <param name="endTime">结束时间。 -1.0代表信号的结束时间</param>
+	/// <param name="colormapData">色谱图返回数据</param>
+	/// <param name="timeBins">时间轴分段数</param>
+	/// <param name="frequencyBins">频率轴分段数</param>
 	/// <returns></returns>
-	int GenerateTimeFrequencyColormap(SignalNative signalNative, RpmNative rpmNative, int windowType, int spectrumLines, double overlap, double startTime, double endTime, double** colormapData, int* timeBins, int* frequencyBins);
+	int GenerateTimeFrequencyColormap(SignalNative signalNative, int windowType, int spectrumLines, double overlap, double startTime, double endTime, double** colormapData, int* timeBins, int* frequencyBins);
 
 	/// <summary>
 	/// 计算转速频率色谱图
 	/// </summary>
-	/// <param name="signalNative"></param>
-	/// <param name="rpmNative"></param>
-	/// <param name="windowType"></param>
-	/// <param name="spectrumLines"></param>
-	/// <param name="overlap"></param>
-	/// <param name="lowerRpmThreshold"></param>
-	/// <param name="upperRpmThreshold"></param>
-	/// <param name="colormapData"></param>
-	/// <param name="rpmBins"></param>
-	/// <param name="frequencyBins"></param>
+	/// <param name="signalNative">信号结构体描述</param>
+	/// <param name="rpmNative">转速结构体描述</param>
+	/// <param name="windowType">窗函数类型 0-矩形窗 1-汉宁窗</param>
+	/// <param name="spectrumLines">谱线数</param>
+	/// <param name="overlap">重叠率</param>
+	/// <param name="lowerRpmThreshold">转速轴起始转速</param>
+	/// <param name="upperRpmThreshold">转速轴终止转速。-1.0代表信号的最大转速</param>
+	/// <param name="colormapData">色谱图返回数据</param>
+	/// <param name="rpmBins">转速轴分段数</param>
+	/// <param name="frequencyBins">频率轴分段数</param>
 	/// <returns></returns>
 	int GenerateRpmFrequencyColormap(SignalNative signalNative, RpmNative rpmNative, int windowType, int spectrumLines, double overlap, double lowerRpmThreshold, double upperRpmThreshold, double** colormapData, int* rpmBins, int* frequencyBins);
 	
@@ -71,6 +70,12 @@ extern "C" {
 	/// <param name="license">指向许可证字符串的指针。</param>
 	/// <returns>如果许可证加载和验证成功，则返回 true；否则返回 false。</returns>
 	int LoadLicense(const char* license);
+
+	/// <summary>
+	/// 获取最后一次错误的错误消息。
+	/// </summary>
+	/// <returns></returns>
+	const char* GetLastErrorMessage(int errorCode);
 
 #ifdef __cplusplus
 }

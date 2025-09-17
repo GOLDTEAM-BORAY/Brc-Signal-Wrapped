@@ -12,10 +12,11 @@
 
 int main()
 {
-	const char* licensePath = "C:\\Users\\joyho\\OneDrive\\桌面\\LIC-20250908-19990fe9.lic";
+	const char* licensePath = "path\\to\\license";
 	LoadLicense(licensePath);
 	std::cout << "License loaded successfully." << std::endl;
 
+	// Demo for AveragedSpectrumByIncrement
 #if 0
 	const char* filePath = "path\\to\\signal";
 	std::ifstream infile(filePath);
@@ -76,7 +77,8 @@ int main()
 	delete[] arrayFromFile;
 #endif
 
-#if 1
+	// Demo for GenerateOrderColormap
+#if 0
 	const std::string signalPath = "path\\to\\signal";
 	int signalDataLen = 0;
 	double* signalData = ReadDoublesFromFile(signalPath, 0, &signalDataLen);
@@ -102,6 +104,36 @@ int main()
 	}
 
 	delete[] rpmData;
+	delete[] signalData;
+#endif
+
+	// Demo for GenerateTimeFrequencyColormap
+#if 1
+	const std::string signalPath = "path\\to\\signal";
+	int signalDataLen = 0;
+	double* signalData = ReadDoublesFromFile(signalPath, 0, &signalDataLen);
+	SignalNative signalNative = { signalData, signalDataLen, 1.0 / 51200.0, 0 };
+
+	double* colormapData = nullptr;
+	int timeBins = 0;
+	int frequencyBins = 0;
+	int ret = GenerateTimeFrequencyColormap(signalNative, 0, 4096, 0.5, 0.0, -1.0, &colormapData, &timeBins, &frequencyBins);
+
+	if (ret < 0)
+	{
+		const char* errMsg = GetLastErrorMessage(ret);
+		std::cerr << "Error: " << errMsg << std::endl;
+	}
+
+	for (size_t i = 0; i < timeBins; ++i)
+	{
+		for (size_t j = 0; j < frequencyBins; ++j)
+		{
+			std::cout << colormapData[i * frequencyBins + j] << " ";
+		}
+		std::cout << std::endl;
+	}
+
 	delete[] signalData;
 #endif
 
