@@ -46,7 +46,22 @@ extern "C" {
 	/// <param name="timeBins">时间轴分段数</param>
 	/// <param name="frequencyBins">频率轴分段数</param>
 	/// <returns></returns>
-	int GenerateTimeFrequencyColormap(SignalNative signalNative, int windowType, int spectrumLines, double overlap, double startTime, double endTime, double** colormapData, int* timeBins, int* frequencyBins);
+	int GenerateTimeFrequencyColormapByOverlap(SignalNative signalNative, int windowType, int spectrumLines, double overlap, double startTime, double endTime, double** colormapData, int* timeBins, int* frequencyBins);
+
+	/// <summary>
+	/// 计算时间频率色谱图
+	/// </summary>
+	/// <param name="signalNative">信号结构体描述</param>
+	/// <param name="windowType">窗函数类型 0-矩形窗 1-汉宁窗</param>
+	/// <param name="spectrumLines">谱线数</param>
+	/// <param name="increment">帧移时间</param>
+	/// <param name="startTime">开始时间</param>
+	/// <param name="endTime">结束时间。 -1.0代表信号的结束时间</param>
+	/// <param name="colormapData">色谱图返回数据</param>
+	/// <param name="timeBins">时间轴分段数</param>
+	/// <param name="frequencyBins">频率轴分段数</param>
+	/// <returns></returns>
+	int GenerateTimeFrequencyColormapByIncrement(SignalNative signalNative, int windowType, int spectrumLines, double increment, double startTime, double endTime, double** colormapData, int* timeBins, int* frequencyBins);
 
 	/// <summary>
 	/// 计算转速频率色谱图
@@ -55,14 +70,28 @@ extern "C" {
 	/// <param name="rpmNative">转速结构体描述</param>
 	/// <param name="windowType">窗函数类型 0-矩形窗 1-汉宁窗</param>
 	/// <param name="spectrumLines">谱线数</param>
-	/// <param name="overlap">重叠率</param>
 	/// <param name="lowerRpmThreshold">转速轴起始转速</param>
 	/// <param name="upperRpmThreshold">转速轴终止转速。-1.0代表信号的最大转速</param>
+	/// <param name="rpmStep">转速步长</param>
 	/// <param name="colormapData">色谱图返回数据</param>
 	/// <param name="rpmBins">转速轴分段数</param>
 	/// <param name="frequencyBins">频率轴分段数</param>
 	/// <returns></returns>
-	int GenerateRpmFrequencyColormap(SignalNative signalNative, RpmNative rpmNative, int windowType, int spectrumLines, double overlap, double lowerRpmThreshold, double upperRpmThreshold, double** colormapData, int* rpmBins, int* frequencyBins);
+	int GenerateRpmFrequencyColormap(SignalNative signalNative, RpmNative rpmNative, int windowType, int spectrumLines, double lowerRpmThreshold, double upperRpmThreshold, double rpmStep, double** colormapData, int* rpmBins, int* frequencyBins);
+
+	/// <summary>
+	/// 计算OA曲线
+	/// </summary>
+	/// <param name="signalNative">信号结构体描述</param>
+	/// <param name="duration">计算信号时间长度</param>
+	/// <param name="spectrumLines">谱线数</param>
+	/// <param name="increment">帧移时间</param>
+	/// <param name="windowType">窗函数类型 0-矩形窗 1-汉宁窗</param>
+	/// <param name="weightType">加权类型 0-无 1-A计权 2-B计权 3-C计权</param>
+	/// <param name="levelData">返回OA数据</param>
+	/// <param name="timeBins">时间轴分段数</param>
+	/// <returns></returns>
+	int OverallSoundPressureLevelSpectral(SignalNative signalNative, double duration, int spectrumLines, double increment, int windowType, int weightType, double** levelData, int* timeBins);
 	
 	/// <summary>
 	/// 加载许可证字符串并验证其有效性。
