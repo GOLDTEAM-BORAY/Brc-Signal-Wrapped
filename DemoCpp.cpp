@@ -12,49 +12,18 @@
 
 int main()
 {
-	const char* licensePath = "path\\to\\license";
+	const char* licensePath = "C:\\Users\\joyho\\OneDrive\\桌面\\LIC-20250908-19990fe9.lic";
 	LoadLicense(licensePath);
+	system("cls");
 	std::cout << "License loaded successfully." << std::endl;
 
 	// Demo for AveragedSpectrumByIncrement
 #if 0
-	const char* filePath = "path\\to\\signal";
-	std::ifstream infile(filePath);
-	std::vector<double> dataFromFile;
-	std::string line;
+	const char* filePath = "D:\\source\\BrcSignalKit\\Brc.Signal.Tests\\Data\\gobao\\src\\sound_signal.txt";
+	int signalDataLen = 0;
+	double* signalData = ReadDoublesFromFile(filePath, 0, &signalDataLen);
 
-	if (!infile)
-	{
-		std::cerr << "Cannot open: " << filePath << std::endl;
-		return 1;
-	}
-
-	while (std::getline(infile, line))
-	{
-		size_t first = line.find_first_not_of(" \t\r\n");
-		if (first == std::string::npos) continue;
-		if (line[first] == '#') continue;
-
-		std::istringstream iss(line);
-		double value;
-		if (iss >> value)
-		{
-			dataFromFile.push_back(value);
-		}
-	}
-
-	double* arrayFromFile = nullptr;
-	size_t arraySize = dataFromFile.size();
-	if (!dataFromFile.empty())
-	{
-		arrayFromFile = new double[arraySize];
-		for (size_t i = 0; i < arraySize; ++i)
-		{
-			arrayFromFile[i] = dataFromFile[i];
-		}
-	}
-
-	SignalNative signalNative = { arrayFromFile, (int)arraySize, 1.0 / 51200.0, 0 };
+	SignalNative signalNative = { signalData, signalDataLen, 1.0 / 51200.0, 0 };
 	int outLength = 0;
 	double* spectrumResult = nullptr;
 	int resCode = AveragedSpectrumByIncrement(
@@ -62,26 +31,33 @@ int main()
 		30.0,
 		4096,
 		0.15,
+		(int)FormatType::RMS,
 		(int)AverageType::Energy,
-		(int)WeightType::None,
+		(int)WeightType::A,
 		(int)WindowType::Hanning,
 		true,
 		&spectrumResult,
 		(int*)&outLength);
 
-	for (size_t i = 0; i < outLength; ++i)
+	if (resCode < 0)
 	{
-		std::cout << "dataFromFile[" << i << "] = " << spectrumResult[i] << std::endl;
+		const char* errMsg = GetLastErrorMessage(resCode);
+		std::cerr << "Error: " << errMsg << std::endl;
 	}
 
-	delete[] arrayFromFile;
+	for (size_t i = 0; i < outLength; ++i)
+	{
+		std::cout << spectrumResult[i] << std::endl;
+	}
+
+	delete[] signalData;
 #endif
 
 	// Demo for GenerateOrderColormap
 #if 0
-	const std::string signalPath = "path\\to\\signal";
+	const char* filePath = "D:\\source\\BrcSignalKit\\Brc.Signal.Tests\\Data\\gobao\\src\\sound_signal.txt";
 	int signalDataLen = 0;
-	double* signalData = ReadDoublesFromFile(signalPath, 0, &signalDataLen);
+	double* signalData = ReadDoublesFromFile(filePath, 0, &signalDataLen);
 	SignalNative signalNative = { signalData, signalDataLen, 1.0 / 51200.0, 0 };
 
 	const std::string rpmPath = "path\\to\\rpm";
@@ -92,7 +68,7 @@ int main()
 	double* colormapData = nullptr;
 	int orderBins = 0;
 	int rpmBins = 0;
-	GenerateOrderColormap(signalNative, rpmNative, 32, 0.25, 25, (int)WindowType::Rectangular, &colormapData, &orderBins, &rpmBins);
+	GenerateOrderRpmColormap(signalNative, rpmNative, 32, 0.25, 25, (int)FormatType::RMS, (int)WindowType::Rectangular, (int)ScaleType::Db, & colormapData, &orderBins, &rpmBins);
 
 	for (size_t i = 0; i < orderBins; ++i)
 	{
@@ -109,9 +85,9 @@ int main()
 
 	// Demo for GenerateTimeFrequencyColormapByOverlap
 #if 0
-	const std::string signalPath = "path\\to\\signal";
+	const char* filePath = "D:\\source\\BrcSignalKit\\Brc.Signal.Tests\\Data\\order\\time_freq\\src\\signal.txt";
 	int signalDataLen = 0;
-	double* signalData = ReadDoublesFromFile(signalPath, 0, &signalDataLen);
+	double* signalData = ReadDoublesFromFile(filePath, 0, &signalDataLen);
 	SignalNative signalNative = { signalData, signalDataLen, 1.0 / 51200.0, 0 };
 
 	double* colormapData = nullptr;
@@ -119,8 +95,11 @@ int main()
 	int frequencyBins = 0;
 	int ret = GenerateTimeFrequencyColormapByOverlap(
 		signalNative, 
-		(int)WindowType::Rectangular, 
-		4096, /*谱线数*/
+		(int)FormatType::Peak,
+		(int)WindowType::Rectangular,
+		(int)WeightType::None,
+		(int)ScaleType::Linear,
+		2560, /*谱线数*/
 		0.5, /*重叠率*/
 		0.0, /*开始时间*/
 		-1.0, /*结束时间*/
@@ -134,11 +113,11 @@ int main()
 		std::cerr << "Error: " << errMsg << std::endl;
 	}
 
-	for (size_t i = 0; i < timeBins; ++i)
+	for (size_t i = 20; i < timeBins; ++i)
 	{
 		for (size_t j = 0; j < frequencyBins; ++j)
 		{
-			std::cout << colormapData[i * frequencyBins + j] << " ";
+			std::cout << colormapData[i * frequencyBins + j] << "\n";
 		}
 		std::cout << std::endl;
 	}
@@ -148,9 +127,9 @@ int main()
 
 	// Demo for GenerateTimeFrequencyColormapByIncrement
 #if 0
-	const std::string signalPath = "path\\to\\signal";
+	const char* filePath = "D:\\source\\BrcSignalKit\\Brc.Signal.Tests\\Data\\gobao\\src\\sound_signal.txt";
 	int signalDataLen = 0;
-	double* signalData = ReadDoublesFromFile(signalPath, 0, &signalDataLen);
+	double* signalData = ReadDoublesFromFile(filePath, 0, &signalDataLen);
 	SignalNative signalNative = { signalData, signalDataLen, 1.0 / 51200.0, 0 };
 
 	double* colormapData = nullptr;
@@ -158,7 +137,11 @@ int main()
 	int frequencyBins = 0;
 	int ret = GenerateTimeFrequencyColormapByIncrement(
 		signalNative,
+		(int)SignalType::Acoustic,
+		(int)FormatType::RMS,
 		(int)WindowType::Rectangular,
+		(int)WeightType::None,
+		(int)ScaleType::Db,
 		4096, /*谱线数*/
 		0.15, /*帧移时间*/
 		0.0, /*开始时间*/
@@ -177,7 +160,7 @@ int main()
 	{
 		for (size_t j = 0; j < frequencyBins; ++j)
 		{
-			std::cout << colormapData[i * frequencyBins + j] << " ";
+			std::cout << colormapData[i * frequencyBins + j] << "\n";
 		}
 		std::cout << std::endl;
 	}
@@ -187,30 +170,46 @@ int main()
 
 	// Demo for GenerateRpmFrequencyColormap
 #if 0
-	const std::string signalPath = "path\\to\\signal";
+	const std::string signalPath = "D:\\source\\BrcSignalKit\\Brc.Signal.Tests\\Data\\gobao\\src\\sound_signal.txt";
 	int signalDataLen = 0;
 	double* signalData = ReadDoublesFromFile(signalPath, 0, &signalDataLen);
 	SignalNative signalNative = { signalData, signalDataLen, 1.0 / 51200.0, 0 };
 
-	const std::string rpmPath = "path\\to\\signal";
+	const std::string rpmPath = "D:\\source\\BrcSignalKit\\Brc.Signal.Tests\\Data\\gobao\\src\\speed.txt";
 	int rpmDataLen = 0;
 	double* rpmData = ReadDoublesFromFile(rpmPath, 0, &rpmDataLen);
-	RpmNative rpmNative = { rpmData, rpmDataLen };
+
+	std::vector<double> timeValuesVec(rpmDataLen);
+	for (int i = 0; i < rpmDataLen; ++i) {
+	    timeValuesVec[i] = i * (1.0 / 51200.0);
+	}
+	double* timeData = timeValuesVec.data();
+
+	RpmNative rpmNative = { rpmData, timeData, rpmDataLen };
 
 	double* colormapData = nullptr;
+	double* rpmOutData = nullptr;
+	double* freqOutData = nullptr;
+
 	int rpmBins = 0;
-	int orderBins = 0;
+	int freqBins = 0;
 	int ret = GenerateRpmFrequencyColormap(
 		signalNative, 
 		rpmNative, 
-		(int)WindowType::Rectangular, 
+		(int)SignalType::Acoustic,
+		(int)FormatType::RMS,
+		(int)WindowType::Hanning, 
+		(int)WeightType::A,
+		(int)ScaleType::Db,
 		4096,
 		0.0, 
 		-1.0, 
 		25, 
 		&colormapData, 
+		&rpmOutData,
+		&freqOutData,
 		&rpmBins, 
-		&orderBins);
+		&freqBins);
 
 	if (ret < 0)
 	{
@@ -220,9 +219,10 @@ int main()
 
 	for (size_t i = 0; i < rpmBins; ++i)
 	{
-		for (size_t j = 0; j < orderBins; ++j)
+		std::cout << "RPM: " << rpmOutData[i] << std::endl << std::endl;
+		for (size_t j = 0; j < freqBins; ++j)
 		{
-			std::cout << colormapData[i * orderBins + j] << " ";
+			std::cout << freqOutData[j] << "\t\t" << colormapData[i * rpmBins + j] << std::endl;
 		}
 		std::cout << std::endl;
 	}
@@ -230,20 +230,22 @@ int main()
 
 	// Demo for OverallSoundPressureLevelSpectral
 #if 0
-	const std::string signalPath = "path\\to\\signal";
+	const std::string signalPath = "D:\\source\\BrcSignalKit\\Brc.Signal.Tests\\Data\\gobao\\src\\vibration_signal.txt";
 	int signalDataLen = 0;
 	double* signalData = ReadDoublesFromFile(signalPath, 0, &signalDataLen);
 	SignalNative signalNative = { signalData, signalDataLen, 1.0 / 51200.0, 0 };
 
 	double* levelData = nullptr;
 	int timeBins = 0;
-	int ret = OverallSoundPressureLevelSpectral(
+	int ret = OverallLevelSpectral(
 		signalNative,
-		30.0,
+		SignalType::Vibration,
+		40,
 		4096, 
 		0.15, 
 		(int)WindowType::Hanning, 
 		(int)WeightType::None, 
+		(int)ScaleType::Db,
 		&levelData, 
 		&timeBins);
 
@@ -257,5 +259,50 @@ int main()
 	{
 		std::cout << levelData[i] << std::endl;
 	}
+#endif
+
+	// Demo for AveragedOctaveBandLevels
+#if 0
+	const std::string signalPath = "D:\\source\\BrcSignalKit\\Brc.Signal.Tests\\Data\\gobao\\src\\sound_signal.txt";
+	int signalDataLen = 0;
+	double* signalData = ReadDoublesFromFile(signalPath, 0, &signalDataLen);
+	SignalNative signalNative = { signalData, signalDataLen, 1.0 / 51200.0, 0 };
+
+	double* levelData = nullptr;
+	double* centerFreqs = nullptr;
+	double* lowerFreqs = nullptr;
+	double* upperFreqs = nullptr;
+	int levelBins = 0;
+	int ret = AveragedOctaveBandLevels(signalNative,
+		40.0,
+		40966,
+		0.15,
+		(int)FormatType::RMS,
+		(int)OctaveType::ThirdOctave,
+		(int)AverageType::Energy,
+		(int)WindowType::Hanning,
+		(int)ScaleType::Db,
+		(int)WeightType::A,
+		12,
+		26000,
+		&levelData,
+		&centerFreqs,
+		&lowerFreqs,
+		&upperFreqs,
+		&levelBins);
+
+
+	if (ret < 0)
+	{
+		const char* errMsg = GetLastErrorMessage(ret);
+		std::cerr << "Error: " << errMsg << std::endl;
+	}
+
+	for (size_t i = 0; i < levelBins; ++i)
+	{
+		std::cout << centerFreqs[i] << "\t\t" << levelData[i] << std::endl;
+	}
+
+	delete[] signalData;
 #endif
 }

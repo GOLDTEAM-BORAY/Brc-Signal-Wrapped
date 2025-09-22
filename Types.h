@@ -18,6 +18,7 @@ extern "C" {
 
 	typedef struct {
 		double* RpmValues;
+		double* TimeValues;
 		int Length;
 	} RpmNative;
 
@@ -45,6 +46,30 @@ extern "C" {
 		FreqRpm = 2,
 		OrderRpm = 3
 	} ColormapType;
+
+	typedef enum {
+		Linear = 0,
+		Db = 1
+	} ScaleType;
+
+	typedef enum {
+		RMS = 0,
+		Peak = 1,
+		PeakToPeak = 2
+	} FormatType;
+
+	typedef enum {
+		Acoustic = 0,
+		Vibration = 1
+	} SignalType;
+
+	typedef enum {
+		Octave,
+		ThirdOctave,
+		SixthOctave,
+		TwelfthOctave,
+		TwentyFourthOctave,
+	} OctaveType;
 
 #ifdef __cplusplus
 }
