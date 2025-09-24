@@ -305,4 +305,77 @@ int main()
 
 	delete[] signalData;
 #endif
+
+	// Demo for OrderSection
+#if 0
+	const std::string signalPath = "D:/source/BrcSignalKit/Brc.Signal.Tests/Data/gobao/src/acoustic_signal.txt";
+	int signalDataLen = 0;
+	double* signalData = ReadDoublesFromFile(signalPath, 0, &signalDataLen);
+	SignalNative signalNative = { signalData, signalDataLen, 1.0 / 51200.0, 0 };
+	SignalSlice(signalNative, 15.0, 30.0, &signalNative);
+
+	const std::string rpmPath = "D:/source/BrcSignalKit/Brc.Signal.Tests/Data/gobao/src/speed.txt";
+	int rpmDataLen = 0;
+	double* rpmData = ReadDoublesFromFile(rpmPath, 0, &rpmDataLen);
+	std::vector<double> timeValuesVec(rpmDataLen);
+	for (int i = 0; i < rpmDataLen; ++i) {
+		timeValuesVec[i] = i * (1.0 / 51200.0);
+	}
+	double* timeData = timeValuesVec.data();
+	RpmNative rpmNative = { rpmData, timeData, rpmDataLen };
+	RpmSlice(rpmNative, 15.0, 30.0, &rpmNative);
+
+	double* orderSectionData = nullptr;
+	double* rpmOutData = nullptr;
+	int rpmBins = 0;
+
+	int ret = OrderSection(signalNative,
+		rpmNative,
+		(int)SignalType::Acoustic,
+		(int)WindowType::Hanning,
+		(int)WeightType::A,
+		(int)ScaleType::Db,
+		4096,
+		14.0,
+		0.5,
+		25.0,
+		&orderSectionData,
+		&rpmOutData,
+		&rpmBins);
+
+	if (ret < 0)
+	{
+		const char* errMsg = GetLastErrorMessage(ret);
+		std::cerr << "Error: " << errMsg << std::endl;
+	}
+
+	for (size_t i = 0; i < rpmBins; ++i)
+	{
+		std::cout << "RPM: " << rpmOutData[i] << "\t\tAMP: " << orderSectionData[i] << std::endl;
+	}
+#endif
+
+	// Demo for PulseToRpm
+#if 0
+	const std::string signalPath = "D:/source/BrcSignalKit/Brc.Signal.Tests/Data/gobao/src/pulse_signal.txt";
+	int signalDataLen = 0;
+	double* signalData = ReadDoublesFromFile(signalPath, 0, &signalDataLen);
+	SignalNative signalNative = { signalData, signalDataLen, 1.0 / 51200.0, 0 };
+
+	EdgeDetectorNative edgeDetectorNative = { 10, 0.5, 0 };
+	RpmCalculationOptionsNative rpmCalculationOptionsNative = { 2, 10, 1, true, -1.0, -1.0, 0.1 };
+	RpmNative rpmNative;
+
+	int ret = PulseToRpm(signalNative, edgeDetectorNative, rpmCalculationOptionsNative, &rpmNative);
+	if (ret < 0)
+	{
+		const char* errMsg = GetLastErrorMessage(ret);
+		std::cerr << "Error: " << errMsg << std::endl;
+	}
+	for (size_t i = 0; i < rpmNative.Length; ++i)
+	{
+		std::cout << "Time: " << rpmNative.TimeValues[i] << "\t\tRPM: " << rpmNative.RpmValues[i] << std::endl;
+	}
+	delete[] signalData;
+#endif
 }

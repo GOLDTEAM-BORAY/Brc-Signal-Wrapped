@@ -22,6 +22,22 @@ extern "C" {
 		int Length;
 	} RpmNative;
 
+	typedef struct {
+		int MinInterval;	// 最小过零点间隔，用于过滤过于接近的过零点，默认值 10;
+		double offset;		// 检测的脉冲电压偏移量，默认值 0.0;
+		int edgeType;		// 检测的边缘类型，0-上升沿 1-下降沿 2-两者都检测，默认值 0;
+	} EdgeDetectorNative;
+
+	typedef struct {
+		int PulsesPerRevolution;	// 每转一圈的脉冲数，根据检测设备配置;
+		int PlusesPerMeasurement;	// 用于计算每个RPM值的周期数，默认值 100;
+		int SkipEdges;				// 每隔多少个边沿计算一次RPM，默认值 100;
+		bool IsResample;			// 是否进行重采样，默认值 false;
+		double ResampleStartTime;	// 重采样的起始时间（秒），默认值 -1.0，使用第一个时间点;
+		double ResampleEndTime;		// 重采样的结束时间（秒），默认值 -1.0，使用最后一个时间点;
+		double ResampleInterval;	// 重采样的时间间隔（秒），默认 1.0;
+	} RpmCalculationOptionsNative;
+
 	typedef enum {
 		Energy = 0,
 		Mean = 1,
@@ -70,6 +86,12 @@ extern "C" {
 		TwelfthOctave,
 		TwentyFourthOctave,
 	} OctaveType;
+
+	typedef enum {
+		Rising = 0,
+		Falling = 1,
+		Both = 2
+	};
 
 #ifdef __cplusplus
 }

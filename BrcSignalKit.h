@@ -129,7 +129,56 @@ extern "C" {
 	/// <param name="levelBins">频带分段数</param>
 	/// <returns></returns>
 	int AveragedOctaveBandLevels(SignalNative signalNative, double duration, int spectrumLines, double increment, int foramtType, int octaveType, int averageType, int windowType, int scaleType, int weightType, double lowerFreq, double upperFreq, double** levelData, double** centerFreqs, double** lowerFreqs, double** upperFreqs, int* levelBins);
+
+	/// <summary>
+	/// 阶次切片
+	/// </summary>
+	/// <param name="signalNative">信号结构体描述</param>
+	/// <param name="rpmNative">转速结构体描述</param>
+	/// <param name="signalType">信号类型 0-声学信号 1-振动信号</param>
+	/// <param name="windowType">窗函数类型 0-矩形窗 1-汉宁窗</param>
+	/// <param name="weightType">加权类型 0-无 1-A计权 2-B计权 3-C计权</param>
+	/// <param name="scaleType">Y轴类型 0-线性 1-对数</param>
+	/// <param name="specturmLines">谱线数</param>
+	/// <param name="targetOrder">目标切片阶次</param>
+	/// <param name="orderBandwidth">切片带宽</param>
+	/// <param name="rpmStep">转速轴分段步长</param>
+	/// <param name="outOrderSection">阶次切片结果</param>
+	/// <param name="outRpmPoints">转速轴</param>
+	/// <param name="rpmBins">转速轴线数</param>
+	/// <returns></returns>
+	int OrderSection(SignalNative signalNative, RpmNative rpmNative, int signalType, int windowType, int weightType, int scaleType, int specturmLines, double targetOrder, double orderBandwidth, double rpmStep, double** outOrderSection, double** outRpmPoints, int* rpmBins);
 	
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="signalNative"></param>
+	/// <param name="startTime"></param>
+	/// <param name="endTime"></param>
+	/// <param name="outSignal"></param>
+	/// <returns></returns>
+	int SignalSlice(SignalNative signalNative, double startTime, double endTime, SignalNative* outSignal);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="rpmNative"></param>
+	/// <param name="startTime"></param>
+	/// <param name="endTime"></param>
+	/// <param name="outRpm"></param>
+	/// <returns></returns>
+	int RpmSlice(RpmNative rpmNative, double startTime, double endTime, RpmNative* outRpm);
+
+	/// <summary>
+	/// 脉冲信号转转速
+	/// </summary>
+	/// <param name="signalNative">脉冲信号源</param>
+	/// <param name="edgeDetectorNative">边缘检测选项</param>
+	/// <param name="rpmCalculationOptionsNative">转速计算选项</param>
+	/// <param name="outRpm">转速输出</param>
+	/// <returns></returns>
+	int PulseToRpm(SignalNative signalNative, EdgeDetectorNative edgeDetectorNative, RpmCalculationOptionsNative rpmCalculationOptionsNative, RpmNative* outRpm);
+
 	/// <summary>
 	/// 加载许可证字符串并验证其有效性。
 	/// </summary>
