@@ -4,169 +4,197 @@
 extern "C" {
 #endif
 	/// <summary>
-	/// 平均谱算法
+	/// 1. 声压总级
 	/// </summary>
-	/// <param name="signalNative">信号结构体描述</param>
-	/// <param name="duration">计算信号时间长度</param>
-	/// <param name="spectrumLines">谱线数</param>
-	/// <param name="increment">帧移时间</param>
-	/// <param name="formatType">格式类型 0-RMS 1-Peak 2-PeakToPeak</param>
-	/// <param name="averageType">平均类型 0-Energy(能量平均) 1-Mean(算数平均) 2-Max(最大值平均)</param>
-	/// <param name="weightType">加权类型 0-无 1-A计权 2-B计权 3-C计权</param>
-	/// <param name="windowType">窗函数类型 0-矩形窗 1-汉宁窗</param>
-	/// <param name="normalize">是否归一化</param>
-	/// <param name="outLength">信号数组长度</param>
-	/// <returns>信号数组</returns>
-	int AveragedSpectrumByIncrement(SignalNative signalNative, double duration, int spectrumLines, double increment, int formatType, int averageType, int weightType, int windowType, bool normalize, double** outSpectrum, int* outLength);
+	/// <param name="signalNative">输入的信号数据结构体。</param>
+	/// <param name="spectrumLines">谱线数，决定频谱分辨率。</param>
+	/// <param name="increment">分析步进，单位为秒。</param>
+	/// <param name="referenceValue">参考值，仅用于db输出时的参考值。</param>
+	/// <param name="windowType">窗函数类型 0-矩形窗 1-Hanning窗</param>
+	/// <param name="weightType">加权类型 0-A计权 1-B计权 2-C计权</param>
+	/// <param name="scaleType">缩放类型 0-线性输出 1-DB输出</param>
+	/// <param name="levelData">输出参数，指向计算得到的声压级数据的指针。</param>
+	/// <param name="timeBins">输出参数，指向时间分箱数量的指针。</param>
+	/// <returns>返回1表示成功，其他值表示错误代码。</returns>
+	int OverallLevelSpectral(SignalNative signalNative, int spectrumLines, double increment, double referenceValue, int windowType, int weightType, int scaleType, double** levelData, int* timeBins);
 
 	/// <summary>
-	/// 计算阶次色谱图
+	/// 2. 阶次震动和噪声
 	/// </summary>
-	/// <param name="signalNative">信号结构体描述</param>
-	/// <param name="rpmNative">转速</param>
-	/// <param name="maxOrder">最大阶次</param>
-	/// <param name="orderResolution">阶次分辨率</param>
-	/// <param name="rpmStep">转速步长</param>
-	/// <param name="formatType">格式类型 0-RMS 1-Peak 2-PeakToPeak</param>
-	/// <param name="windowType">窗函数类型 0-矩形窗 1-汉宁窗</param>
-	/// <param name="scaleType">频率轴类型 0-线性 1-对数</param>
-	/// <param name="colormapData">返回阶次数据</param>
-	/// <param name="orderBins">阶次轴分段数</param>
-	/// <param name="rpmBins">转速轴分段数</param>
-	/// <returns></returns>
-	int GenerateOrderRpmColormap(SignalNative signalNative, RpmNative rpmNative, double maxOrder, double orderResolution, int rpmStep, int formatType, int windowType, int scaleType, double** colormapData, int* orderBins, int* rpmBins);
+	/// <param name="signalNative">输入的信号数据结构体。</param>
+	/// <param name="rpmNative">输入的转速数据结构体。</param>
+	/// <param name="specturmLines">谱线数，决定阶次分辨率。</param>
+	/// <param name="targetOrder">目标阶次。</param>
+	/// <param name="orderBandwidth">阶次带宽。</param>
+	/// <param name="rpmStep">转速步进，单位为rpm。</param>
+	/// <param name="referenceValue">参考值，仅用于db输出时的参考值。</param>
+	/// <param name="windowType">窗函数类型 0-矩形窗 1-Hanning窗</param>
+	/// <param name="weightType">加权类型 0-A计权 1-B计权 2-C计权</param>
+	/// <param name="scaleType">缩放类型 0-线性输出 1-DB输出</param>
+	/// <param name="outOrderSection">输出参数，指向计算得到的阶次区段数据的指针。</param>
+	/// <param name="outRpmPoints">输出参数，指向对应转速点的指针。</param>
+	/// <param name="rpmBins">输出参数，指向转速分箱数量的指针。</param>
+	/// <returns>返回1表示成功，其他值表示错误代码。</returns>
+	int OrderSection(SignalNative signalNative, RpmNative rpmNative, int specturmLines, double targetOrder, double orderBandwidth, double rpmStep, double referenceValue, int windowType, int weightType, int scaleType, double** outOrderSection, double** outRpmPoints, int* rpmBins);
 
 	/// <summary>
-	/// 计算时间频率色谱图
+	/// 3. 振动和噪声RMS
 	/// </summary>
-	/// <param name="signalNative">信号结构体描述</param>
-	/// <param name="signalType">信号类型 0-声学信号 1-振动信号</param>
-	/// <param name="formatType">格式类型 0-RMS 1-Peak 2-PeakToPeak</param>
-	/// <param name="windowType">窗函数类型 0-矩形窗 1-汉宁窗</param>
-	/// <param name="weightType">加权类型 0-无 1-A计权 2-B计权 3-C计权</param>
-	/// <param name="scaleType">频率轴类型 0-线性 1-对数</param>
-	/// <param name="spectrumLines">谱线数</param>
-	/// <param name="overlap">重叠率</param>
-	/// <param name="startTime">开始时间</param>
-	/// <param name="endTime">结束时间。 -1.0代表信号的结束时间</param>
-	/// <param name="colormapData">色谱图返回数据</param>
-	/// <param name="timeBins">时间轴分段数</param>
-	/// <param name="frequencyBins">频率轴分段数</param>
-	/// <returns></returns>
-	int GenerateTimeFrequencyColormapByOverlap(SignalNative signalNative, int signalType, int formatType, int windowType, int weightType, int scaleType, int spectrumLines, double overlap, double startTime, double endTime, double** colormapData, int* timeBins, int* frequencyBins);
+	/// <param name="signalNative">输入的信号数据结构体。</param>
+	/// <param name="weightType">加权类型，0-A计权 1-B计权 2-C计权。</param>
+	/// <param name="outValue">输出参数，指向计算得到的RMS值的指针。</param>
+	/// <returns>返回1表示成功，其他值表示错误代码。</returns>
+	int GetRms(SignalNative signalNative, int weightType, double* outValue);
 
 	/// <summary>
-	/// 计算时间频率色谱图
+	/// 4. 振动最大值
 	/// </summary>
-	/// <param name="signalNative">信号结构体描述</param>
-	/// <param name="signalType">信号类型 0-声学信号 1-振动信号</param>
-	/// <param name="formatType">格式类型 0-RMS 1-Peak 2-PeakToPeak</param>
-	/// <param name="windowType">窗函数类型 0-矩形窗 1-汉宁窗</param>
-	/// <param name="weightType">加权类型 0-无 1-A计权 2-B计权 3-C计权</param>
-	/// <param name="scaleType">频率轴类型 0-线性 1-对数</param>
-	/// <param name="spectrumLines">谱线数</param>
-	/// <param name="increment">帧移时间</param>
-	/// <param name="startTime">开始时间</param>
-	/// <param name="endTime">结束时间。 -1.0代表信号的结束时间</param>
-	/// <param name="colormapData">色谱图返回数据</param>
-	/// <param name="timeBins">时间轴分段数</param>
-	/// <param name="frequencyBins">频率轴分段数</param>
-	/// <returns></returns>
-	int GenerateTimeFrequencyColormapByIncrement(SignalNative signalNative, int signalType, int formatType, int windowType, int weightType, int scaleType, int spectrumLines, double increment, double startTime, double endTime, double** colormapData, int* timeBins, int* frequencyBins);
+	/// <param name="signalNative">输入的信号数据结构体。</param>
+	/// <param name="outValue">输出参数，指向计算得到的最大值的指针。</param>
+	/// <returns>返回1表示成功，其他值表示错误代码。</returns>
+	int GetMax(SignalNative signalNative, double* outValue);
 
 	/// <summary>
-	/// 计算转速频率色谱图
+	/// 5. 倍频程分析（Octave Band Analysis）
 	/// </summary>
-	/// <param name="signalNative">信号结构体描述</param>
-	/// <param name="rpmNative">转速结构体描述</param>
-	/// <param name="formatType">格式类型 0-RMS 1-Peak 2-PeakToPeak</param>
-	/// <param name="windowType">窗函数类型 0-矩形窗 1-汉宁窗</param>
-	/// <param name="scaleType">频率轴类型 0-线性 1-对数</param>
-	/// <param name="spectrumLines">谱线数</param>
-	/// <param name="lowerRpmThreshold">转速轴起始转速</param>
-	/// <param name="upperRpmThreshold">转速轴终止转速。-1.0代表信号的最大转速</param>
-	/// <param name="rpmStep">转速步长</param>
-	/// <param name="colormapData">色谱图返回数据</param>
-	/// <param name="rpmBins">转速轴分段数</param>
-	/// <param name="frequencyBins">频率轴分段数</param>
-	/// <returns></returns>
-	int GenerateRpmFrequencyColormap(SignalNative signalNative, RpmNative rpmNative, int signalType, int formatType, int windowType, int weightType, int scaleType, int spectrumLines, double lowerRpmThreshold, double upperRpmThreshold, double rpmStep, double** colormapData, double** rpmData, double** freqData, int* rpmBins, int* frequencyBins);
+	/// <param name="signalNative">输入的信号数据结构体。</param>
+	/// <param name="spectrumLines">谱线数，决定频带分辨率。</param>
+	/// <param name="increment">分析步进，单位为秒。</param>
+	/// <param name="lowerFreq">分析的最低频率。</param>
+	/// <param name="upperFreq">分析的最高频率。</param>
+	/// <param name="referenceValue">参考值，仅用于db输出时的参考值。</param>
+	/// <param name="formatType">输出格式类型。 0-RMS 1-Peak 2-Peak to peak</param>
+	/// <param name="octaveType">倍频程类型</param>
+	/// <param name="averageType">平均类型。</param>
+	/// <param name="windowType">窗函数类型。</param>
+	/// <param name="weightType">加权类型</param>
+	/// <param name="scaleType">缩放类型</param>
+	/// <param name="levelData">输出参数，指向计算得到的倍频程能量数据的指针。</param>
+	/// <param name="centerFreqs">输出参数，指向中心频率数组的指针。</param>
+	/// <param name="lowerFreqs">输出参数，指向每个频带下限频率数组的指针。</param>
+	/// <param name="upperFreqs">输出参数，指向每个频带上限频率数组的指针。</param>
+	/// <param name="levelBins">输出参数，指向频带数量的指针。</param>
+	/// <returns>返回1表示成功，其他值表示错误代码。</returns>
+	int AveragedOctaveBandLevels(SignalNative signalNative, int spectrumLines, double increment, double lowerFreq, double upperFreq, double referenceValue, int foramtType, int octaveType, int averageType, int windowType, int weightType, int scaleType, double** levelData, double** centerFreqs, double** lowerFreqs, double** upperFreqs, int* levelBins);
+
+	// 6. 阶次谱
+	// TODO
 
 	/// <summary>
-	/// 计算OA曲线
+	/// 7. 振动和噪音平均谱
 	/// </summary>
-	/// <param name="signalNative">信号结构体描述</param>
-	/// <param name="signalType">信号类型 0-声学信号 1-振动信号</param>
-	/// <param name="duration">计算信号时间长度</param>
-	/// <param name="spectrumLines">谱线数</param>
-	/// <param name="increment">帧移时间</param>
-	/// <param name="windowType">窗函数类型 0-矩形窗 1-汉宁窗</param>
-	/// <param name="weightType">加权类型 0-无 1-A计权 2-B计权 3-C计权</param>
-	/// <param name="levelData">返回OA数据</param>
-	/// <param name="timeBins">时间轴分段数</param>
-	/// <returns></returns>
-	int OverallLevelSpectral(SignalNative signalNative, int signalType, double duration, int spectrumLines, double increment, int windowType, int weightType, int scaleType, double** levelData, int* timeBins);
+	/// <param name="signalNative">输入的信号数据结构体。</param>
+	/// <param name="spectrumLines">谱线数，决定频谱分辨率。</param>
+	/// <param name="increment">分析步进，单位为秒。</param>
+	/// <param name="formatType">输出格式类型。 0-RMS 1-Peak 2-Peak to peak</param>
+	/// <param name="averageType">平均类型。</param>
+	/// <param name="weightType">加权类型。</param>
+	/// <param name="windowType">窗函数类型。</param>
+	/// <param name="outSpectrum">输出参数，指向计算得到的平均谱数据的指针。</param>
+	/// <param name="outLength">输出参数，指向平均谱长度的指针。</param>
+	/// <returns>返回1表示成功，其他值表示错误代码。</returns>
+	int AveragedSpectrumByIncrement(SignalNative signalNative, int spectrumLines, double increment, int formatType, int averageType, int weightType, int windowType, double** outSpectrum, int* outLength);
 
 	/// <summary>
-	/// 计算平均谱倍频程
+	/// 8. 包络谱
 	/// </summary>
-	/// <param name="signalNative">信号结构体描述</param>
-	/// <param name="duration">计算信号时间长度</param>
-	/// <param name="spectrumLines">谱线数</param>
-	/// <param name="increment">帧移时间</param>
-	/// <param name="foramtType">格式类型 0-RMS 1-Peak 2-PeakToPeak</param>
-	/// <param name="octaveType">倍频程类型：0-1倍 1-1/3倍频程 2-1/6倍频程 3-1/12倍频程 4-1/24倍频程</param>
-	/// <param name="averageType">平均方法 0-Energy(能量平均) 1-Mean(算数平均) 2-Max(最大值平均)</param>
-	/// <param name="windowType">窗函数</param>
-	/// <param name="scaleType">Y轴类型 0-线性 1-对数</param>
-	/// <param name="weightType">计权类型</param>
-	/// <param name="lowerFreq">输出的中心频率下限</param>
-	/// <param name="upperFreq">输出的中心频率上限</param>
-	/// <param name="levelData">返回 倍频程数据</param>
-	/// <param name="centerFreqs">返回 中心频率点序列</param>
-	/// <param name="lowerFreqs">返回 频带起始频率点序列</param>
-	/// <param name="upperFreqs">返回 频带终止频率点序列</param>
-	/// <param name="levelBins">频带分段数</param>
-	/// <returns></returns>
-	int AveragedOctaveBandLevels(SignalNative signalNative, double duration, int spectrumLines, double increment, int foramtType, int octaveType, int averageType, int windowType, int scaleType, int weightType, double lowerFreq, double upperFreq, double** levelData, double** centerFreqs, double** lowerFreqs, double** upperFreqs, int* levelBins);
+	/// <param name="signalNative">输入的信号数据结构体。</param>
+	/// <param name="outEnvelope">输出参数，指向计算得到的包络谱数据的指针。</param>
+	/// <param name="outLength">输出参数，指向包络谱长度的指针。</param>
+	/// <returns>返回1表示成功，其他值表示错误代码。</returns>
+	int GetEnvelope(SignalNative signalNative, double** outEnvelope, int* outLength);
 
 	/// <summary>
-	/// 阶次切片
+	/// 9. 色谱图（时间-频率）
 	/// </summary>
-	/// <param name="signalNative">信号结构体描述</param>
-	/// <param name="rpmNative">转速结构体描述</param>
-	/// <param name="signalType">信号类型 0-声学信号 1-振动信号</param>
-	/// <param name="windowType">窗函数类型 0-矩形窗 1-汉宁窗</param>
-	/// <param name="weightType">加权类型 0-无 1-A计权 2-B计权 3-C计权</param>
-	/// <param name="scaleType">Y轴类型 0-线性 1-对数</param>
-	/// <param name="specturmLines">谱线数</param>
-	/// <param name="targetOrder">目标切片阶次</param>
-	/// <param name="orderBandwidth">切片带宽</param>
-	/// <param name="rpmStep">转速轴分段步长</param>
-	/// <param name="outOrderSection">阶次切片结果</param>
-	/// <param name="outRpmPoints">转速轴</param>
-	/// <param name="rpmBins">转速轴线数</param>
-	/// <returns></returns>
-	int OrderSection(SignalNative signalNative, RpmNative rpmNative, int signalType, int windowType, int weightType, int scaleType, int specturmLines, double targetOrder, double orderBandwidth, double rpmStep, double** outOrderSection, double** outRpmPoints, int* rpmBins);
-	
+	/// <param name="signalNative">输入的信号数据结构体。</param>
+	/// <param name="spectrumLines">谱线数，决定频谱分辨率。</param>
+	/// <param name="increment">分析步进，单位为秒。</param>
+	/// <param name="startTime">分析起始时间，单位为秒。</param>
+	/// <param name="endTime">分析结束时间，单位为秒，-1.0表示到信号末尾。</param>
+	/// <param name="referenceValue">参考值，仅用于db输出时的参考值。</param>
+	/// <param name="formatType">输出格式类型。 0-RMS 1-Peak 2-Peak to peak</param>
+	/// <param name="windowType">窗函数类型。</param>
+	/// <param name="weightType">加权类型。</param>
+	/// <param name="scaleType">缩放类型。</param>
+	/// <param name="colormapData">输出参数，指向色谱图数据的指针。</param>
+	/// <param name="timeBins">输出参数，指向时间分箱数量的指针。</param>
+	/// <param name="frequencyBins">输出参数，指向频率分箱数量的指针。</param>
+	/// <returns>返回1表示成功，其他值表示错误代码。</returns>
+	int GenerateTimeFrequencyColormapByIncrement(SignalNative signalNative, int spectrumLines, double increment, double startTime, double endTime, double referenceValue, int formatType, int windowType, int weightType, int scaleType, double** colormapData, int* timeBins, int* frequencyBins);
+
 	/// <summary>
-	/// 
+	/// 10. 色谱图（转速-频率）
 	/// </summary>
-	/// <param name="signalNative"></param>
-	/// <param name="startTime"></param>
-	/// <param name="endTime"></param>
-	/// <param name="outSignal"></param>
-	/// <returns></returns>
+	/// <param name="signalNative">输入的信号数据结构体。</param>
+	/// <param name="rpmNative">输入的转速数据结构体。</param>
+	/// <param name="spectrumLines">谱线数，决定频谱分辨率。</param>
+	/// <param name="lowerRpmThreshold">转速下限。</param>
+	/// <param name="upperRpmThreshold">转速上限，-1.0表示最大转速。</param>
+	/// <param name="rpmStep">转速步进，单位为rpm。</param>
+	/// <param name="referenceValue">参考值，仅用于db输出时的参考值。</param>
+	/// <param name="formatType">输出格式类型。</param>
+	/// <param name="windowType">窗函数类型。</param>
+	/// <param name="weightType">加权类型。</param>
+	/// <param name="scaleType">缩放类型。</param>
+	/// <param name="colormapData">输出参数，指向色谱图数据的指针。</param>
+	/// <param name="rpmData">输出参数，指向转速轴数据的指针。</param>
+	/// <param name="freqData">输出参数，指向频率轴数据的指针。</param>
+	/// <param name="rpmBins">输出参数，指向转速分箱数量的指针。</param>
+	/// <param name="frequencyBins">输出参数，指向频率分箱数量的指针。</param>
+	/// <returns>返回1表示成功，其他值表示错误代码。</returns>
+	int GenerateRpmFrequencyColormap(SignalNative signalNative, RpmNative rpmNative, int spectrumLines, double lowerRpmThreshold, double upperRpmThreshold, double rpmStep, double referenceValue, int formatType, int windowType, int weightType, int scaleType, double** colormapData, double** rpmData, double** freqData, int* rpmBins, int* frequencyBins);
+
+	/// <summary>
+	/// 11. 色谱图（转速-阶次）
+	/// </summary>
+	/// <param name="signalNative">输入的信号数据结构体。</param>
+	/// <param name="rpmNative">输入的转速数据结构体。</param>
+	/// <param name="maxOrder">阶次的最大值。</param>
+	/// <param name="orderResolution">阶次分辨率。</param>
+	/// <param name="oversamplingFactor">过采样因子。</param>
+	/// <param name="lowerRpmThreshold">转速下限。</param>
+	/// <param name="upperRpmThreshold">转速上限。</param>
+	/// <param name="rpmStep">转速步进，单位为rpm。</param>
+	/// <param name="referenceValue">参考值，仅用于db输出时的参考值。</param>
+	/// <param name="formatType">输出格式类型。</param>
+	/// <param name="windowType">窗函数类型。</param>
+	/// <param name="weightType">加权类型。</param>
+	/// <param name="scaleType">缩放类型。</param>
+	/// <param name="colormapData">输出参数，指向色谱图数据的指针。</param>
+	/// <param name="rpmAxis">输出参数，指向转速轴数据的指针。</param>
+	/// <param name="orderAxis">输出参数，指向阶次轴数据的指针。</param>
+	/// <param name="rpmBins">输出参数，指向转速分箱数量的指针。</param>
+	/// <param name="orderBins">输出参数，指向阶次分箱数量的指针。</param>
+	/// <returns>返回1表示成功，其他值表示错误代码。</returns>
+	int GenerateRpmOrderColormap(SignalNative signalNative, RpmNative rpmNative, double maxOrder, double orderResolution, double oversamplingFactor, double lowerRpmThreshold, double upperRpmThreshold, int rpmStep, double referenceValue, int formatType, int windowType, int weightType, int scaleType, double** colormapData, double** rpmAxis, double** orderAxis, int* rpmBins, int* orderBins);
+
+	/// <summary>
+	/// 12. 振动Crest值
+	/// </summary>
+	/// <param name="signalNative">输入的信号数据结构体。</param>
+	/// <param name="outValue">输出参数，指向Crest值的指针。</param>
+	/// <returns>返回1表示成功，其他值表示错误代码。</returns>
+	int GetCrestFactor(SignalNative signalNative, double* outValue);
+
+	/// <summary>
+	/// 截取信号的指定时间段。
+	/// </summary>
+	/// <param name="signalNative">输入的信号数据结构体。</param>
+	/// <param name="startTime">起始时间，单位为秒。</param>
+	/// <param name="endTime">结束时间，单位为秒。</param>
+	/// <param name="outSignal">输出参数，指向截取后信号的结构体指针。</param>
+	/// <returns>返回1表示成功，其他值表示错误代码。</returns>
 	int SignalSlice(SignalNative signalNative, double startTime, double endTime, SignalNative* outSignal);
 
 	/// <summary>
-	/// 
+	/// 截取转速的指定时间段。
 	/// </summary>
-	/// <param name="rpmNative"></param>
-	/// <param name="startTime"></param>
-	/// <param name="endTime"></param>
-	/// <param name="outRpm"></param>
-	/// <returns></returns>
+	/// <param name="rpmNative">输入的转速数据结构体。</param>
+	/// <param name="startTime">起始时间，单位为秒。</param>
+	/// <param name="endTime">结束时间，单位为秒。</param>
+	/// <param name="outRpm">输出参数，指向截取后转速的结构体指针。</param>
+	/// <returns>返回1表示成功，其他值表示错误代码。</returns>
 	int RpmSlice(RpmNative rpmNative, double startTime, double endTime, RpmNative* outRpm);
 
 	/// <summary>
@@ -176,22 +204,23 @@ extern "C" {
 	/// <param name="edgeDetectorNative">边缘检测选项</param>
 	/// <param name="rpmCalculationOptionsNative">转速计算选项</param>
 	/// <param name="outRpm">转速输出</param>
-	/// <returns></returns>
+	/// <returns>返回1表示成功，其他值表示错误代码。</returns>
 	int PulseToRpm(SignalNative signalNative, EdgeDetectorNative edgeDetectorNative, RpmCalculationOptionsNative rpmCalculationOptionsNative, RpmNative* outRpm);
 
 	/// <summary>
 	/// 加载许可证字符串并验证其有效性。
 	/// </summary>
 	/// <param name="license">指向许可证字符串的指针。</param>
-	/// <returns>如果许可证加载和验证成功，则返回 true；否则返回 false。</returns>
+	/// <returns>如果许可证加载和验证成功，则返回1；否则返回0。</returns>
 	int LoadLicense(const char* license);
 
 	/// <summary>
 	/// 获取最后一次错误的错误消息。
 	/// </summary>
-	/// <returns></returns>
+	/// <param name="errorCode">错误码。</param>
+	/// <returns>返回错误消息字符串。</returns>
 	const char* GetLastErrorMessage(int errorCode);
 
 #ifdef __cplusplus
 }
-#endif
+#endif#endif
