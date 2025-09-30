@@ -77,8 +77,27 @@ extern "C" {
 	/// <returns>返回1表示成功，其他值表示错误代码。</returns>
 	int AveragedOctaveBandLevels(SignalNative signalNative, int spectrumLines, double increment, double lowerFreq, double upperFreq, double referenceValue, int foramtType, int octaveType, int averageType, int windowType, int weightType, int scaleType, double** levelData, double** centerFreqs, double** lowerFreqs, double** upperFreqs, int* levelBins);
 
-	// 6. 阶次谱
-	// TODO
+	/// <summary>
+	/// 6. 阶次谱
+	/// </summary>
+	/// <param name="signalNative">输入的信号数据结构体。</param>
+	/// <param name="rpmNative">输入的转速数据结构体。</param>
+	/// <param name="maxOrder">阶次的最大值。</param>
+	/// <param name="orderResolution">阶次分辨率。</param>
+	/// <param name="oversamplingFactor">过采样因子。</param>
+	/// <param name="lowerRpmThreshold">转速下限。</param>
+	/// <param name="upperRpmThreshold">转速上限。</param>
+	/// <param name="rpmStep">转速步进，单位为rpm。</param>
+	/// <param name="referenceValue">参考值，仅用于db输出时的参考值。</param>
+	/// <param name="formatType">输出格式类型。</param>
+	/// <param name="windowType">窗函数类型。</param>
+	/// <param name="weightType">加权类型。</param>
+	/// <param name="scaleType">缩放类型。</param>
+	/// <param name="spectrumData">输出参数，指向阶次谱数据的指针。</param>
+	/// <param name="orderAxis">输出参数，指向阶次轴数据的指针。</param>
+	/// <param name="orderBins">输出参数，指向阶次分箱数量的指针。</param>
+	/// <returns>返回1表示成功，其他值表示错误代码。</returns>
+	int OrderSpectrum(SignalNative signalNative, RpmNative rpmNative, double maxOrder, double orderResolution, double oversamplingFactor, double lowerRpmThreshold, double upperRpmThreshold, int rpmStep, double referenceValue, int formatType, int windowType, int weightType, int scaleType, double** spectrumData, double** orderAxis, int* orderBins);
 
 	/// <summary>
 	/// 7. 振动和噪音平均谱
