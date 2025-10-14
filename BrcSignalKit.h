@@ -4,7 +4,7 @@
 extern "C" {
 #endif
 	/// <summary>
-	/// 1. 声压总级
+	/// 1-1. 声压总级
 	/// </summary>
 	/// <param name="signalNative">输入的信号数据结构体。</param>
 	/// <param name="spectrumLines">谱线数，决定频谱分辨率。</param>
@@ -14,9 +14,27 @@ extern "C" {
 	/// <param name="weightType">加权类型 0-A计权 1-B计权 2-C计权</param>
 	/// <param name="scaleType">缩放类型 0-线性输出 1-DB输出</param>
 	/// <param name="levelData">输出参数，指向计算得到的声压级数据的指针。</param>
-	/// <param name="timeBins">输出参数，指向时间分箱数量的指针。</param>
+	/// <param name="timeBins">输出参数，指向时间分量的指针。</param>
 	/// <returns>返回1表示成功，其他值表示错误代码。</returns>
 	int OverallLevelSpectral(SignalNative signalNative, int spectrumLines, double increment, double referenceValue, int windowType, int weightType, int scaleType, double** levelData, int* timeBins);
+
+	/// <summary>
+	/// 1-2. 声压总级-跟踪转速
+	/// </summary>
+	/// <param name="signalNative">输入的信号数据结构体。</param>
+	/// <param name="rpmNative">输入的信号数据结构体。</param>
+	/// <param name="spectrumLines">谱线数，决定频谱分辨率。</param>
+	/// <param name="lowerRpmThreshold">转速下限，=0时取转速信号的最小转速</param>
+	/// <param name="upperRpmThreshold">转速上线，=-1时取转速信号的最大转速</param>
+	/// <param name="rpmStep">转速步长</param>
+	/// <param name="referenceValue">DB参考值</param>
+	/// <param name="windowType">窗函数类型 0-矩形窗 1-Hanning窗</param>
+	/// <param name="weightType">加权类型 0-A计权 1-B计权 2-C计权</param>
+	/// <param name="scaleType">缩放类型 0-线性输出 1-DB输出<</param>
+	/// <param name="levelData">输出参数，指向计算得到的声压级数据的指针。</param>
+	/// <param name="rpmBins">输出参数，指向转速分量的指针。</param>
+	/// <returns>返回1表示成功，其他值表示错误代码。</returns>
+	int OverallLevelSpectralTacho(SignalNative signalNative, RpmNative rpmNative, int spectrumLines, double lowerRpmThreshold, double upperRpmThreshold, double rpmStep, double referenceValue, int windowType, int weightType, int scaleType, double** levelData, double** rpmData, int* rpmBins);
 
 	/// <summary>
 	/// 2. 阶次震动和噪声
