@@ -240,6 +240,13 @@ extern "C" {
 	/// <returns>返回错误消息字符串。</returns>
 	const char* GetLastErrorMessage(int errorCode);
 
+	/// <summary>
+	/// 释放由指针 ptr 指向的内存资源。
+	/// </summary>
+	/// <param name="ptr">指向需要释放的内存块的指针。</param>
+	/// <returns>如果释放成功，返回 0；否则返回非零值表示错误。</returns>
+	int Free(void* ptr);
+
 #ifdef __cplusplus
 }
 #endif#endif

@@ -12,8 +12,8 @@
 
 int main()
 {
-	const char* licensePath = "C:\\Users\\joyho\\OneDrive\\桌面\\LIC-20250908-19990fe9.lic";
-	LoadLicense(licensePath);
+	const char* licensePath = "C:\\Users\\joyho\\OneDrive\\桌面\\LIC-20251014-686df2b4.lic";
+	int licRet = LoadLicense(licensePath);
 	system("cls");
 	std::cout << "License loaded successfully." << std::endl;
 
@@ -49,6 +49,7 @@ int main()
 	}
 
 	delete[] signalData;
+	Free(spectrumResult);
 #endif
 
 	// Demo for OrderSection
@@ -145,7 +146,7 @@ int main()
 #endif
 
 	// Demo for GenerateRpmFrequencyColormap
-#if 0
+#if 1
 	const std::string signalPath = "D:\\source\\BrcSignalKit\\Brc.Signal.Tests\\Data\\gobao\\src\\sound_signal.txt";
 	int signalDataLen = 0;
 	double* signalData = ReadDoublesFromFile(signalPath.c_str(), 0, &signalDataLen);
@@ -191,15 +192,24 @@ int main()
 		std::cerr << "Error: " << errMsg << std::endl;
 	}
 
-	for (size_t i = 0; i < rpmBins; ++i)
-	{
-		std::cout << "RPM: " << rpmOutData[i] << std::endl << std::endl;
-		for (size_t j = 0; j < freqBins; ++j)
-		{
-			std::cout << freqOutData[j] << "\t\t" << colormapData[i * rpmBins + j] << std::endl;
-		}
-		std::cout << std::endl;
-	}
+	//for (size_t i = 0; i < rpmBins; ++i)
+	//{
+	//	std::cout << "RPM: " << rpmOutData[i] << std::endl << std::endl;
+	//	for (size_t j = 0; j < freqBins; ++j)
+	//	{
+	//		std::cout << freqOutData[j] << "\t\t" << colormapData[i * rpmBins + j] << std::endl;
+	//	}
+	//	std::cout << std::endl;
+	//}
+
+	delete[] signalData;
+	delete[] rpmData;
+
+
+	Free(colormapData);
+	Free(rpmOutData);
+	Free(freqOutData);
+
 #endif
 
 	// Demo for OverallLevelSpectral
