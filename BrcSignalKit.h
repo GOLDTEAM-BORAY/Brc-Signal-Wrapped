@@ -115,7 +115,7 @@ extern "C" {
 	/// <param name="orderAxis">输出参数，指向阶次轴数据的指针。</param>
 	/// <param name="orderBins">输出参数，指向阶次分箱数量的指针。</param>
 	/// <returns>返回1表示成功，其他值表示错误代码。</returns>
-	int OrderSpectrum(SignalNative signalNative, RpmNative rpmNative, double maxOrder, double orderResolution, double oversamplingFactor, double lowerRpmThreshold, double upperRpmThreshold, int rpmStep, double referenceValue, int formatType, int windowType, int weightType, int scaleType, double** spectrumData, double** orderAxis, int* orderBins);
+	int OrderSpectrum(SignalNative signalNative, RpmNative rpmNative, double maxOrder, double orderResolution, double oversamplingFactor, double lowerRpmThreshold, double upperRpmThreshold, double rpmStep, double referenceValue, int formatType, int windowType, int weightType, int scaleType, double** spectrumData, double** orderAxis, int* orderBins);
 
 	/// <summary>
 	/// 6-2. 平均阶次谱-转速跟踪
@@ -137,7 +137,7 @@ extern "C" {
 	/// <param name="orderAxis"></param>
 	/// <param name="orderBins"></param>
 	/// <returns></returns>
-	int AvgOrderSpectrumTacho(SignalNative signalNative, RpmNative rpmNative, double maxOrder, double orderResolution, double oversamplingFactor, double lowerRpmThreshold, double upperRpmThreshold, int rpmStep, double referenceValue, int formatType, int windowType, int weightType, int scaleType, double** spectrumData, double** orderAxis, int* orderBins);
+	int AvgOrderSpectrumTacho(SignalNative signalNative, RpmNative rpmNative, double maxOrder, double orderResolution, double oversamplingFactor, double lowerRpmThreshold, double upperRpmThreshold, double rpmStep, double referenceValue, int formatType, int windowType, int weightType, int scaleType, double** spectrumData, double** orderAxis, int* orderBins);
 
 	/// <summary>
 	/// 6-3. 平均阶次谱-时间切片
