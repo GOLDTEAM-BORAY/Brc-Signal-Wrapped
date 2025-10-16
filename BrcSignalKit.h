@@ -96,7 +96,7 @@ extern "C" {
 	int AveragedOctaveBandLevels(SignalNative signalNative, int spectrumLines, double increment, double lowerFreq, double upperFreq, double referenceValue, int foramtType, int octaveType, int averageType, int windowType, int weightType, int scaleType, double** levelData, double** centerFreqs, double** lowerFreqs, double** upperFreqs, int* levelBins);
 
 	/// <summary>
-	/// 6. 阶次谱
+	/// 6-1. 阶次谱
 	/// </summary>
 	/// <param name="signalNative">输入的信号数据结构体。</param>
 	/// <param name="rpmNative">输入的转速数据结构体。</param>
@@ -116,6 +116,48 @@ extern "C" {
 	/// <param name="orderBins">输出参数，指向阶次分箱数量的指针。</param>
 	/// <returns>返回1表示成功，其他值表示错误代码。</returns>
 	int OrderSpectrum(SignalNative signalNative, RpmNative rpmNative, double maxOrder, double orderResolution, double oversamplingFactor, double lowerRpmThreshold, double upperRpmThreshold, int rpmStep, double referenceValue, int formatType, int windowType, int weightType, int scaleType, double** spectrumData, double** orderAxis, int* orderBins);
+
+	/// <summary>
+	/// 6-2. 平均阶次谱-转速跟踪
+	/// </summary>
+	/// <param name="signalNative"></param>
+	/// <param name="rpmNative"></param>
+	/// <param name="maxOrder"></param>
+	/// <param name="orderResolution"></param>
+	/// <param name="oversamplingFactor"></param>
+	/// <param name="lowerRpmThreshold"></param>
+	/// <param name="upperRpmThreshold"></param>
+	/// <param name="rpmStep"></param>
+	/// <param name="referenceValue"></param>
+	/// <param name="formatType"></param>
+	/// <param name="windowType"></param>
+	/// <param name="weightType"></param>
+	/// <param name="scaleType"></param>
+	/// <param name="spectrumData"></param>
+	/// <param name="orderAxis"></param>
+	/// <param name="orderBins"></param>
+	/// <returns></returns>
+	int AvgOrderSpectrumTacho(SignalNative signalNative, RpmNative rpmNative, double maxOrder, double orderResolution, double oversamplingFactor, double lowerRpmThreshold, double upperRpmThreshold, int rpmStep, double referenceValue, int formatType, int windowType, int weightType, int scaleType, double** spectrumData, double** orderAxis, int* orderBins);
+
+	/// <summary>
+	/// 6-3. 平均阶次谱-时间切片
+	/// </summary>
+	/// <param name="signalNative"></param>
+	/// <param name="rpmNative"></param>
+	/// <param name="spectrumList"></param>
+	/// <param name="increment"></param>
+	/// <param name="maxOrder"></param>
+	/// <param name="orderResolution"></param>
+	/// <param name="referenceValue"></param>
+	/// <param name="formatType"></param>
+	/// <param name="windowType"></param>
+	/// <param name="weightType"></param>
+	/// <param name="scaleType"></param>
+	/// <param name="spectrumData"></param>
+	/// <param name="orderAxis"></param>
+	/// <param name="orderBins"></param>
+	/// <returns></returns>
+	int AvgOrderSpectrumTime(SignalNative signalNative, RpmNative rpmNative, int spectrumList, double increment, double maxOrder, double orderResolution, double referenceValue, int formatType, int windowType, int weightType, int scaleType, double** spectrumData, double** orderAxis, int* orderBins);
 
 	/// <summary>
 	/// 7. 振动和噪音平均谱
@@ -204,7 +246,7 @@ extern "C" {
 	/// <param name="rpmBins">输出参数，指向转速分箱数量的指针。</param>
 	/// <param name="orderBins">输出参数，指向阶次分箱数量的指针。</param>
 	/// <returns>返回1表示成功，其他值表示错误代码。</returns>
-	int GenerateRpmOrderColormap(SignalNative signalNative, RpmNative rpmNative, double maxOrder, double orderResolution, double oversamplingFactor, double lowerRpmThreshold, double upperRpmThreshold, int rpmStep, double referenceValue, int formatType, int windowType, int weightType, int scaleType, double** colormapData, double** rpmAxis, double** orderAxis, int* rpmBins, int* orderBins);
+	int GenerateRpmOrderColormap(SignalNative signalNative, RpmNative rpmNative, double maxOrder, double orderResolution, double oversamplingFactor, double lowerRpmThreshold, double upperRpmThreshold, double rpmStep, double referenceValue, int formatType, int windowType, int weightType, int scaleType, double** colormapData, double** rpmAxis, double** orderAxis, int* rpmBins, int* orderBins);
 
 	/// <summary>
 	/// 12. 振动Crest值
