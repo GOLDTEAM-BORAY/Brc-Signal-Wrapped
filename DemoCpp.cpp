@@ -19,12 +19,14 @@ int main()
 	std::cout << "License loaded successfully." << std::endl;
 
 	// Demo for AveragedSpectrumByIncrement
-#if 0
-	const char* filePath = "D:\\source\\BrcSignalKit\\Brc.Signal.Tests\\Data\\gobao\\src\\sound_signal.txt";
+#if 1
+	const char* filePath = "D:\\source\\BrcSignalKit\\Brc.Signal.Tests\\Data\\gobao\\src\\vibration_signal.txt";
 	int signalDataLen = 0;
 	double* signalData = ReadDoublesFromFile(filePath, 0, &signalDataLen);
 
 	SignalNative signalNative = { signalData, signalDataLen, 1.0 / 51200.0, 0 };
+	SignalSlice(signalNative, 2.0, 7.0, &signalNative);
+
 	int outLength = 0;
 	double* spectrumResult = nullptr;
 	int resCode = AveragedSpectrumByIncrement(
@@ -34,7 +36,7 @@ int main()
 		(int)FormatType::RMS,
 		(int)AverageType::Energy,
 		(int)WindowType::Hanning,
-		(int)WeightType::A,
+		(int)WeightType::None,
 		&spectrumResult,
 		(int*)&outLength);
 
@@ -312,6 +314,7 @@ int main()
 	int signalDataLen = 0;
 	double* signalData = ReadDoublesFromFile(signalPath.c_str(), 0, &signalDataLen);
 	SignalNative signalNative = { signalData, signalDataLen, 1.0 / 51200.0, 0 };
+	SignalSlice(signalNative, 14, 31, &signalNative);
 
 	const std::string rpmPath = "D:\\source\\BrcSignalKit\\Brc.Signal.Tests\\Data\\gobao\\src\\speed.txt";
 	int rpmDataLen = 0;
@@ -322,6 +325,7 @@ int main()
 	}
 	double* timeData = timeValuesVec.data();
 	RpmNative rpmNative = { rpmData, timeData, rpmDataLen };
+	RpmSlice(rpmNative, 14, 31, &rpmNative);
 
 	double* levelData = nullptr;
 	double* rpmResult = nullptr;
@@ -331,7 +335,7 @@ int main()
 		rpmNative,
 		4096,
 		550,
-		4400,
+		4000,
 		25.0,
 		20e-6, // referenceValue
 		(int)WindowType::Hanning,

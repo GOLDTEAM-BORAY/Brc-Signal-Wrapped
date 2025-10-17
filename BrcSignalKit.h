@@ -1,4 +1,6 @@
 #pragma once
+#include "Types.h"
+#include "FileReader.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -175,7 +177,7 @@ extern "C" {
 	/// <param name="outSpectrum">输出参数，指向计算得到的平均谱数据的指针。</param>
 	/// <param name="outLength">输出参数，指向平均谱长度的指针。</param>
 	/// <returns>返回1表示成功，其他值表示错误代码。</returns>
-	int AveragedSpectrumByIncrement(SignalNative signalNative, int spectrumLines, double increment, int formatType, int averageType, int weightType, int windowType, double** outSpectrum, int* outLength);
+	int AveragedSpectrumByIncrement(SignalNative signalNative, int spectrumLines, double increment, int formatType, int averageType, int windowType, int weightType, double** outSpectrum, int* outLength);
 
 	/// <summary>
 	/// 8. 包络谱
