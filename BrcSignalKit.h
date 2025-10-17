@@ -137,7 +137,7 @@ extern "C" {
 	/// <param name="orderAxis"></param>
 	/// <param name="orderBins"></param>
 	/// <returns></returns>
-	int AvgOrderSpectrumTacho(SignalNative signalNative, RpmNative rpmNative, double maxOrder, double orderResolution, double oversamplingFactor, double lowerRpmThreshold, double upperRpmThreshold, double rpmStep, double referenceValue, int formatType, int windowType, int weightType, int scaleType, double** spectrumData, double** orderAxis, int* orderBins);
+	int AvgOrderSpectrumTacho(SignalNative signalNative, RpmNative rpmNative, int spectrumLines, double maxOrder, double orderResolution, double lowerRpmThreshold, double upperRpmThreshold, double rpmStep, double referenceValue, int formatType, int windowType, int weightType, int scaleType, double** spectrumData, double** orderAxis, int* orderBins);
 
 	/// <summary>
 	/// 6-3. 平均阶次谱-时间切片
@@ -157,7 +157,7 @@ extern "C" {
 	/// <param name="orderAxis"></param>
 	/// <param name="orderBins"></param>
 	/// <returns></returns>
-	int AvgOrderSpectrumTime(SignalNative signalNative, RpmNative rpmNative, int spectrumList, double increment, double maxOrder, double orderResolution, double referenceValue, int formatType, int windowType, int weightType, int scaleType, double** spectrumData, double** orderAxis, int* orderBins);
+	int AvgOrderSpectrumTime(SignalNative signalNative, RpmNative rpmNative, int spectrumLines, double increment, double maxOrder, double orderResolution, double referenceValue, int formatType, int windowType, int weightType, int scaleType, double** spectrumData, double** orderAxis, int* orderBins);
 
 	/// <summary>
 	/// 7. 振动和噪音平均谱
