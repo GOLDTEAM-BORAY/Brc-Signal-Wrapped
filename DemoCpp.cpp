@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <chrono>
 
 #include "Types.h"
 #include "BrcSignalKit.h"
@@ -212,6 +213,67 @@ int main()
 
 #endif
 
+	// Demo for GenerateRpmOrderColormap
+#if 0
+	const std::string signalPath = "D:\\source\\BrcSignalKit\\Brc.Signal.Tests\\Data\\gobao\\src\\sound_signal.txt";
+	int signalDataLen = 0;
+	double* signalData = ReadDoublesFromFile(signalPath.c_str(), 0, &signalDataLen);
+	SignalNative signalNative = { signalData, signalDataLen, 1.0 / 51200.0, 0 };
+	SignalSlice(signalNative, 14, 31, &signalNative);
+
+	const std::string rpmPath = "D:\\source\\BrcSignalKit\\Brc.Signal.Tests\\Data\\gobao\\src\\speed.txt";
+	int rpmDataLen = 0;
+	double* rpmData = ReadDoublesFromFile(rpmPath.c_str(), 0, &rpmDataLen);
+	std::vector<double> timeValuesVec(rpmDataLen);
+	for (int i = 0; i < rpmDataLen; ++i) {
+		timeValuesVec[i] = i * (1.0 / 51200.0);
+	}
+	double* timeData = timeValuesVec.data();
+	RpmNative rpmNative = { rpmData, timeData, rpmDataLen };
+	RpmSlice(rpmNative, 14, 31, &rpmNative);
+
+	double* colormapData = nullptr;
+	double* rpmOutData = nullptr;
+	double* orderOutData = nullptr;
+
+	int rpmBins = 0;
+	int orderBins = 0;
+
+	// 计算耗时
+	auto start = std::chrono::high_resolution_clock::now();
+
+	int resCode = GenerateRpmOrderColormap(
+		signalNative,
+		rpmNative,
+		20.0,
+		0.25,
+		1.0,
+		550,
+		4500,
+		25.0,
+		1.0, // referenceValue
+		(int)FormatType::RMS,
+		(int)WindowType::Rectangular,
+		(int)WeightType::None,
+		(int)ScaleType::Linear,
+		&colormapData,
+		&rpmOutData,
+		&orderOutData,
+		&rpmBins,
+		&orderBins);
+
+	auto end = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> duration = end - start;
+	std::cout << "Duration: " << duration.count() << " seconds" << std::endl;
+
+	if (resCode != 1)
+	{
+		const char* errMsg = GetLastErrorMessage(resCode);
+		std::cerr << "Error: " << errMsg << std::endl;
+	}
+
+#endif
+
 	// Demo for OverallLevelSpectral
 #if 0
 	const std::string signalPath = "D:\\source\\BrcSignalKit\\Brc.Signal.Tests\\Data\\gobao\\src\\vibration_signal.txt";
@@ -377,6 +439,138 @@ int main()
 	else
 	{
 		std::cout << "RMS Value: " << outValue << std::endl;
+	}
+#endif
+
+	// Demo for Avg Time Tracked Order Spectrum A段噪音
+#if 0
+	const std::string signalPath = "D:\\source\\BrcSignalKit\\Brc.Signal.Tests\\Data\\gobao\\src\\a_sound.txt";
+	int signalDataLen = 0;
+	double* signalData = ReadDoublesFromFile(signalPath.c_str(), 0, &signalDataLen);
+	SignalNative signalNative = { signalData, signalDataLen, 1.0 / 51200.0, 0 };
+
+	const std::string rpmPath = "D:\\source\\BrcSignalKit\\Brc.Signal.Tests\\Data\\gobao\\src\\a_speed.txt";
+	int rpmDataLen = 0;
+	double* rpmData = ReadDoublesFromFile(rpmPath.c_str(), 0, &rpmDataLen);
+	std::vector<double> timeValuesVec(rpmDataLen);
+	for (int i = 0; i < rpmDataLen; ++i) {
+		timeValuesVec[i] = i * (1.0 / 51200.0);
+	}
+	double* timeData = timeValuesVec.data();
+	RpmNative rpmNative = { rpmData, timeData, rpmDataLen };
+
+	double* spectrumData = nullptr;
+	double* orderAxis = nullptr;
+	int orderBins = 0;
+
+	int ret = AvgOrderSpectrumTime(signalNative, rpmNative, 4096, 0.15, 128, 0.5, 1e-5, (int)FormatType::RMS, (int)WindowType::Hanning, (int)WeightType::A, (int)ScaleType::Db, &spectrumData, &orderAxis, &orderBins);
+
+	if (ret != 1)
+	{
+		const char* errMsg = GetLastErrorMessage(ret);
+		std::cerr << "Error: " << errMsg << std::endl;
+	}
+	else
+	{
+		for (size_t i = 0; i < orderBins; ++i)
+		{
+			std::cout << "Order: " << orderAxis[i] << " Amp: " << spectrumData[i] << std::endl << std::endl;
+		}
+	}
+
+#endif
+
+	// Demo for Avg Time Tracked Order Spectrum C段噪音
+#if 0
+	const std::string signalPath = "D:\\source\\BrcSignalKit\\Brc.Signal.Tests\\Data\\gobao\\src\\sound_signal.txt";
+	int signalDataLen = 0;
+	double* signalData = ReadDoublesFromFile(signalPath.c_str(), 0, &signalDataLen);
+	SignalNative signalNative = { signalData, signalDataLen, 1.0 / 51200.0, 0 };
+	SignalSlice(signalNative, 31, 36, &signalNative);
+
+	const std::string rpmPath = "D:\\source\\BrcSignalKit\\Brc.Signal.Tests\\Data\\gobao\\src\\speed.txt";
+	int rpmDataLen = 0;
+	double* rpmData = ReadDoublesFromFile(rpmPath.c_str(), 0, &rpmDataLen);
+	std::vector<double> timeValuesVec(rpmDataLen);
+	for (int i = 0; i < rpmDataLen; ++i) {
+		timeValuesVec[i] = i * (1.0 / 51200.0);
+	}
+	double* timeData = timeValuesVec.data();
+	RpmNative rpmNative = { rpmData, timeData, rpmDataLen };
+	RpmSlice(rpmNative, 31, 36, &rpmNative);
+
+	double* spectrumData = nullptr;
+	double* orderAxis = nullptr;
+	int orderBins = 0;
+
+	int ret = AvgOrderSpectrumTime(signalNative, rpmNative, 4096, 0.15, 128, 0.5, 1e-5, (int)FormatType::RMS, (int)WindowType::Hanning, (int)WeightType::A, (int)ScaleType::Db, &spectrumData, &orderAxis, &orderBins);
+
+	if (ret != 1)
+	{
+		const char* errMsg = GetLastErrorMessage(ret);
+		std::cerr << "Error: " << errMsg << std::endl;
+	}
+	else
+	{
+		for (size_t i = 0; i < orderBins; ++i)
+		{
+			std::cout << "Order: " << orderAxis[i] << " Amp: " << spectrumData[i] << std::endl << std::endl;
+		}
+	}
+#endif
+
+	// Demo for Avg Rpm Tracked Order Spectrum B段噪音
+#if 0
+	const std::string signalPath = "D:\\source\\BrcSignalKit\\Brc.Signal.Tests\\Data\\gobao\\src\\sound_signal.txt";
+	int signalDataLen = 0;
+	double* signalData = ReadDoublesFromFile(signalPath.c_str(), 0, &signalDataLen);
+	SignalNative signalNative = { signalData, signalDataLen, 1.0 / 51200.0, 0 };
+	SignalSlice(signalNative, 14, 31, &signalNative);
+
+	const std::string rpmPath = "D:\\source\\BrcSignalKit\\Brc.Signal.Tests\\Data\\gobao\\src\\speed.txt";
+	int rpmDataLen = 0;
+	double* rpmData = ReadDoublesFromFile(rpmPath.c_str(), 0, &rpmDataLen);
+	std::vector<double> timeValuesVec(rpmDataLen);
+	for (int i = 0; i < rpmDataLen; ++i) {
+		timeValuesVec[i] = i * (1.0 / 51200.0);
+	}
+	double* timeData = timeValuesVec.data();
+	RpmNative rpmNative = { rpmData, timeData, rpmDataLen };
+	RpmSlice(rpmNative, 14, 31, &rpmNative);
+
+	double* spectrumData = nullptr;
+	double* orderAxis = nullptr;
+	int orderBins = 0;
+
+	int ret = AvgOrderSpectrumTacho(
+		signalNative,
+		rpmNative,
+		4096,
+		32,
+		0.25,
+		500,
+		4000,
+		25,
+		1e-5,
+		(int)FormatType::RMS,
+		(int)WindowType::Hanning,
+		(int)WeightType::A,
+		(int)ScaleType::Db,
+		&spectrumData,
+		&orderAxis,
+		&orderBins);
+
+	if (ret != 1)
+	{
+		const char* errMsg = GetLastErrorMessage(ret);
+		std::cerr << "Error: " << errMsg << std::endl;
+	}
+	else
+	{
+		for (size_t i = 0; i < orderBins; ++i)
+		{
+			std::cout << "Order: " << orderAxis[i] << " Amp: " << spectrumData[i] << std::endl << std::endl;
+		}
 	}
 #endif
 }
