@@ -137,17 +137,6 @@ extern "C" {
 		TwentyFourthOctave,
 	} OctaveType;
 
-
-	/**
-	 * 转速触发类型。
-	 * Up: Up触发，要求min转速大于实际最低转速
-	 * ImmUp: Imm. Up触发，允许min转速小于或等于实际最低转速
-	 */
-	typedef enum {
-		Up,
-		ImmUp
-	} RpmTriggerType;
-
 	/**
 	 * 边沿类型枚举。
 	 * Rising: 上升沿
@@ -159,6 +148,16 @@ extern "C" {
 		Falling = 1,
 		Both = 2
 	} EdgeType;
+
+	/**
+	 * 转速触发类型。
+	 * Up: Up触发，要求min转速大于实际最低转速
+	 * ImmUp: Imm. Up触发，允许min转速小于或等于实际最低转速
+	 */
+	typedef enum {
+		Up,
+		ImmUp
+	} RpmTriggerType;
 
 #ifdef __cplusplus
 }

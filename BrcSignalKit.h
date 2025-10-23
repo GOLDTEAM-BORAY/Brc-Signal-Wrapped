@@ -44,7 +44,7 @@ extern "C" {
 	/// </summary>
 	/// <param name="signalNative">输入的信号数据结构体。</param>
 	/// <param name="rpmNative">输入的转速数据结构体。</param>
-	/// <param name="specturmLines">谱线数，决定阶次分辨率。</param>
+	/// <param name="spectrmmLines">谱线数，决定阶次分辨率。</param>
 	/// <param name="targetOrder">目标阶次。</param>
 	/// <param name="orderBandwidth">阶次带宽。</param>
 	/// <param name="lowerRpmThreshold">转速下限。</param>
@@ -59,7 +59,7 @@ extern "C" {
 	/// <param name="outRpmPoints">输出参数，指向对应转速点的指针。</param>
 	/// <param name="rpmBins">输出参数，指向转速分箱数量的指针。</param>
 	/// <returns>返回1表示成功，其他值表示错误代码。</returns>
-	int OrderSection(SignalNative signalNative, RpmNative rpmNative, int specturmLines, double targetOrder, double orderBandwidth, double lowerRpmThreshold, double upperRpmThreshold, double rpmStep, double referenceValue, int formatType, int windowType, int weightType, int scaleType, double** outOrderSection, double** outRpmPoints, int* rpmBins);
+	int OrderSection(SignalNative signalNative, RpmNative rpmNative, int spectrmmLines, double targetOrder, double orderBandwidth, double lowerRpmThreshold, double upperRpmThreshold, double rpmStep, double referenceValue, int formatType, int windowType, int weightType, int scaleType, double** outOrderSection, double** outRpmPoints, int* rpmBins);
 
 	/// <summary>
 	/// 3. 振动和噪声RMS
@@ -126,42 +126,43 @@ extern "C" {
 	/// <summary>
 	/// 6-2. 平均阶次谱-转速跟踪
 	/// </summary>
-	/// <param name="signalNative"></param>
-	/// <param name="rpmNative"></param>
-	/// <param name="maxOrder"></param>
-	/// <param name="orderResolution"></param>
-	/// <param name="oversamplingFactor"></param>
-	/// <param name="lowerRpmThreshold"></param>
-	/// <param name="upperRpmThreshold"></param>
-	/// <param name="rpmStep"></param>
-	/// <param name="referenceValue"></param>
-	/// <param name="formatType"></param>
-	/// <param name="windowType"></param>
-	/// <param name="weightType"></param>
-	/// <param name="scaleType"></param>
-	/// <param name="spectrumData"></param>
-	/// <param name="orderAxis"></param>
-	/// <param name="orderBins"></param>
-	/// <returns></returns>
-	int AvgOrderSpectrumTacho(SignalNative signalNative, RpmNative rpmNative, int spectrumLines, double maxOrder, double orderResolution, double lowerRpmThreshold, double upperRpmThreshold, double rpmStep, double referenceValue, int formatType, int windowType, int weightType, int scaleType, double** spectrumData, double** orderAxis, int* orderBins);
+	/// <param name="signalNative">输入的信号数据结构体，包含信号采样、长度、采样间隔等。</param>
+	/// <param name="rpmNative">输入的转速数据结构体，包含转速值、时间点、数据点数等。</param>
+	/// <param name="spectrumLines">谱线数，决定每个分析窗的频谱分辨率。</param>
+	/// <param name="maxOrder">阶次最大值，决定阶次谱的分析范围。</param>
+	/// <param name="orderResolution">阶次分辨率，阶次轴的步进。</param>
+	/// <param name="lowerRpmThreshold">转速下限，低于该值的数据不参与分析。</param>
+	/// <param name="upperRpmThreshold">转速上限，高于该值的数据不参与分析，-1.0表示最大转速。</param>
+	/// <param name="rpmStep">转速步进，单位为rpm。</param>
+	/// <param name="referenceValue">参考值，仅用于dB输出时的参考值（如声压级常用2e-5 Pa）。</param>
+	/// <param name="formatType">输出格式类型：0-RMS，1-Peak，2-Peak to Peak。</param>
+	/// <param name="windowType">窗函数类型：0-矩形窗，1-Hanning窗。</param>
+	/// <param name="weightType">加权类型：0-无加权，1-A计权，2-B计权，3-C计权。</param>
+	/// <param name="scaleType">缩放类型：0-线性输出，1-dB输出。</param>
+	/// <param name="rpmTriggerType">转速触发类型。0-Up触发，1-Imm. Up触发。</param>
+	/// <param name="spectrumData">输出参数，指向平均阶次谱数据的指针，需释放。</param>
+	/// <param name="orderAxis">输出参数，指向阶次坐标数组的指针，需释放。</param>
+	/// <param name="orderBins">输出参数，指向阶次数量的指针。</param>
+	/// <returns>返回1表示成功，其他值表示错误代码。</returns>
+	int AvgOrderSpectrumTacho(SignalNative signalNative, RpmNative rpmNative, int spectrumLines, double maxOrder, double orderResolution, double lowerRpmThreshold, double upperRpmThreshold, double rpmStep, double referenceValue, int formatType, int windowType, int weightType, int scaleType, int rpmTriggerType, double** spectrumData, double** orderAxis, int* orderBins);
 
 	/// <summary>
-	/// 6-3. 平均阶次谱-时间切片
+	/// 6-3. 平均阶次谱-时间跟踪
 	/// </summary>
-	/// <param name="signalNative"></param>
-	/// <param name="rpmNative"></param>
-	/// <param name="spectrumList"></param>
-	/// <param name="increment"></param>
-	/// <param name="maxOrder"></param>
-	/// <param name="orderResolution"></param>
-	/// <param name="referenceValue"></param>
-	/// <param name="formatType"></param>
-	/// <param name="windowType"></param>
-	/// <param name="weightType"></param>
-	/// <param name="scaleType"></param>
-	/// <param name="spectrumData"></param>
-	/// <param name="orderAxis"></param>
-	/// <param name="orderBins"></param>
+	/// <param name="signalNative">输入的信号数据结构体，包含信号采样、长度、采样间隔等。</param>
+	/// <param name="rpmNative">输入的转速数据结构体，包含转速值、时间点、数据点数等。</param>
+	/// <param name="spectrumLines">谱线数，决定每个分析窗的频谱分辨率。</param>
+	/// <param name="increment">帧移时间</param>
+	/// <param name="maxOrder">阶次最大值，决定阶次谱的分析范围。</param>
+	/// <param name="orderResolution">阶次分辨率，阶次轴的步进。</param>
+	/// <param name="referenceValue">参考值，仅用于dB输出时的参考值（如声压级常用2e-5 Pa）。</param>
+	/// <param name="formatType">输出格式类型：0-RMS，1-Peak，2-Peak to Peak。</param>
+	/// <param name="windowType">窗函数类型：0-矩形窗，1-Hanning窗。</param>
+	/// <param name="weightType">加权类型：0-无加权，1-A计权，2-B计权，3-C计权。</param>
+	/// <param name="scaleType">缩放类型：0-线性输出，1-dB输出。</param>
+	/// <param name="spectrumData">输出参数，指向平均阶次谱数据的指针，需释放。</param>
+	/// <param name="orderAxis">输出参数，指向阶次坐标数组的指针，需释放。</param>
+	/// <param name="orderBins">输出参数，指向阶次数量的指针。</param>
 	/// <returns></returns>
 	int AvgOrderSpectrumTime(SignalNative signalNative, RpmNative rpmNative, int spectrumLines, double increment, double maxOrder, double orderResolution, double referenceValue, int formatType, int windowType, int weightType, int scaleType, double** spectrumData, double** orderAxis, int* orderBins);
 
