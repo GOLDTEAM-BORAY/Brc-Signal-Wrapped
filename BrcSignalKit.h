@@ -33,10 +33,11 @@ extern "C" {
 	/// <param name="windowType">窗函数类型 0-矩形窗 1-Hanning窗</param>
 	/// <param name="weightType">加权类型 0-A计权 1-B计权 2-C计权</param>
 	/// <param name="scaleType">缩放类型 0-线性输出 1-DB输出<</param>
+	/// <param name="rpmTriggerType">转速触发类型。0-Up触发 1-Imm. Up触发</param>
 	/// <param name="levelData">输出参数，指向计算得到的声压级数据的指针。</param>
 	/// <param name="rpmBins">输出参数，指向转速分量的指针。</param>
 	/// <returns>返回1表示成功，其他值表示错误代码。</returns>
-	int OverallLevelSpectralTacho(SignalNative signalNative, RpmNative rpmNative, int spectrumLines, double lowerRpmThreshold, double upperRpmThreshold, double rpmStep, double referenceValue, int windowType, int weightType, int scaleType, double** levelData, double** rpmData, int* rpmBins);
+	int OverallLevelSpectralTacho(SignalNative signalNative, RpmNative rpmNative, int spectrumLines, double lowerRpmThreshold, double upperRpmThreshold, double rpmStep, double referenceValue, int windowType, int weightType, int scaleType, int rpmTriggerType, double** levelData, double** rpmData, int* rpmBins);
 
 	/// <summary>
 	/// 2. 阶次震动和噪声
@@ -221,13 +222,14 @@ extern "C" {
 	/// <param name="windowType">窗函数类型。</param>
 	/// <param name="weightType">加权类型。</param>
 	/// <param name="scaleType">缩放类型。</param>
+	/// <param name="rpmTriggerType">转速触发类型。0-Up触发 1-Imm. Up触发</param>
 	/// <param name="colormapData">输出参数，指向色谱图数据的指针。</param>
 	/// <param name="rpmData">输出参数，指向转速轴数据的指针。</param>
 	/// <param name="freqData">输出参数，指向频率轴数据的指针。</param>
 	/// <param name="rpmBins">输出参数，指向转速分箱数量的指针。</param>
 	/// <param name="frequencyBins">输出参数，指向频率分箱数量的指针。</param>
 	/// <returns>返回1表示成功，其他值表示错误代码。</returns>
-	int GenerateRpmFrequencyColormap(SignalNative signalNative, RpmNative rpmNative, int spectrumLines, double lowerRpmThreshold, double upperRpmThreshold, double rpmStep, double referenceValue, int formatType, int windowType, int weightType, int scaleType, double** colormapData, double** rpmData, double** freqData, int* rpmBins, int* frequencyBins);
+	int GenerateRpmFrequencyColormap(SignalNative signalNative, RpmNative rpmNative, int spectrumLines, double lowerRpmThreshold, double upperRpmThreshold, double rpmStep, double referenceValue, int formatType, int windowType, int weightType, int scaleType, int rpmTriggerType, double** colormapData, double** rpmData, double** freqData, int* rpmBins, int* frequencyBins);
 
 	/// <summary>
 	/// 11. 色谱图（转速-阶次）
