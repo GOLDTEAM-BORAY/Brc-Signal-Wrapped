@@ -55,11 +55,12 @@ extern "C" {
 	/// <param name="windowType">窗函数类型 0-矩形窗 1-Hanning窗</param>
 	/// <param name="weightType">加权类型 0-A计权 1-B计权 2-C计权</param>
 	/// <param name="scaleType">缩放类型 0-线性输出 1-DB输出</param>
+	/// <param name="rpmTriggerType">转速触发类型。0-Up触发 1-Imm. Up触发</param>
 	/// <param name="outOrderSection">输出参数，指向计算得到的阶次区段数据的指针。</param>
 	/// <param name="outRpmPoints">输出参数，指向对应转速点的指针。</param>
 	/// <param name="rpmBins">输出参数，指向转速分箱数量的指针。</param>
 	/// <returns>返回1表示成功，其他值表示错误代码。</returns>
-	int OrderSection(SignalNative signalNative, RpmNative rpmNative, int spectrmmLines, double targetOrder, double orderBandwidth, double lowerRpmThreshold, double upperRpmThreshold, double rpmStep, double referenceValue, int formatType, int windowType, int weightType, int scaleType, double** outOrderSection, double** outRpmPoints, int* rpmBins);
+	int OrderSection(SignalNative signalNative, RpmNative rpmNative, int spectrmmLines, double targetOrder, double orderBandwidth, double lowerRpmThreshold, double upperRpmThreshold, double rpmStep, double referenceValue, int formatType, int windowType, int weightType, int scaleType, int rpmTriggerType, double** outOrderSection, double** outRpmPoints, int* rpmBins);
 
 	/// <summary>
 	/// 3. 振动和噪声RMS
