@@ -17,7 +17,7 @@ int main()
 	std::cout << "License loaded successfully." << std::endl;
 
 	// Demo for AveragedSpectrumByIncrement
-#if 1
+#if 0
 	const char* filePath = "D:\\source\\BrcSignalKit\\Brc.Signal.Tests\\Data\\gobao\\src\\vibration_signal.txt";
 	int signalDataLen = 0;
 	double* signalData = ReadDoublesFromFile(filePath, 0, &signalDataLen);
@@ -574,5 +574,46 @@ int main()
 			std::cout << "Order: " << orderAxis[i] << " Amp: " << spectrumData[i] << std::endl << std::endl;
 		}
 	}
+#endif
+
+#if 1
+	const std::string signalPath = "D:\\source\\BrcSignalKit\\Brc.Signal.Tests\\Data\\gobao\\src\\sound_signal.txt";
+	int signalDataLen = 0;
+	double* signalData = ReadDoublesFromFile(signalPath.c_str(), 0, &signalDataLen);
+
+	void* filterHandle = nullptr;
+	int ret = CreateIirHighpassFilter(51200.0, 60.0, 3, &filterHandle);
+
+	if (ret != 1)
+	{
+		const char* errMsg = GetLastErrorMessage(ret);
+		std::cerr << "Error: " << errMsg << std::endl;
+	}
+
+	double* filterdData = nullptr;
+	ret = ApplyFilter(filterHandle, signalData, signalDataLen, &filterdData);
+	if (ret != 1)
+	{   
+		const char* errMsg = GetLastErrorMessage(ret);
+		std::cerr << "Error: " << errMsg << std::endl;
+	}
+
+	if (filterdData != nullptr)
+	{
+		std::cout << "Filtering succeeded." << std::endl;
+
+		for (size_t i = 0; i < signalDataLen; ++i)
+		{
+			std::cout << filterdData[i] << std::endl;
+		}
+	}
+	else
+	{
+		std::cout << "Filtering failed." << std::endl;
+	}
+
+	delete[] signalData;
+	Free(filterdData);
+	FreeFilter(filterHandle);
 #endif
 }

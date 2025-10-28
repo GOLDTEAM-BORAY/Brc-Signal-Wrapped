@@ -266,6 +266,44 @@ extern "C" {
 	int GetCrestFactor(SignalNative signalNative, double* outValue);
 
 	/// <summary>
+	/// 13-1. 创建IIR高通滤波器
+	/// </summary>
+	/// <param name="sampleRate">信号采样率</param>
+	/// <param name="cutoffFrequency">下限截至频率</param>
+	/// <param name="filterOrder">滤波器阶数</param>
+	/// <param name="outFilterHandle">滤波器句柄</param>
+	/// <returns></returns>
+	int CreateIirHighpassFilter(double sampleRate, double cutoffFrequency, int filterOrder, void** outFilterHandle);
+
+	/// <summary>
+	/// 13-2. 创建FIR高通滤波器
+	/// </summary>
+	/// <param name="sampleRate">信号采样率</param>
+	/// <param name="cutoffFrequency">下限截至频率</param>
+	/// <param name="taps">滤波器抽头数</param>
+	/// <param name="outFilterHandle">滤波器句柄</param>
+	/// <returns></returns>
+	int CreateFirHighpassFilter(double sampleRate, double cutoffFrequency, int taps, void** outFilterHandle);
+
+	/// <summary>
+	/// 13-3. 应用滤波器
+	/// </summary>
+	/// <param name="handle">滤波器句柄</param>
+	/// <param name="samples">信号点数组</param>
+	/// <param name="length">数组长度</param>
+	/// <param name="filtered">返回数组</param>
+	/// <returns></returns>
+	int ApplyFilter(void* handle, double* samples, int length, double** filtered);
+
+
+	/// <summary>
+	/// 13-4. 释放滤波器
+	/// </summary>
+	/// <param name="handle">滤波器句柄</param>
+	/// <returns></returns>
+	int FreeFilter(void* handle);
+
+	/// <summary>
 	/// 截取信号的指定时间段。
 	/// </summary>
 	/// <param name="signalNative">输入的信号数据结构体。</param>
