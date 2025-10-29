@@ -582,7 +582,7 @@ int main()
 	double* signalData = ReadDoublesFromFile(signalPath.c_str(), 0, &signalDataLen);
 
 	void* filterHandle = nullptr;
-	int ret = CreateIirHighpassFilter(51200.0, 60.0, 3, &filterHandle);
+	int ret = CreateIirBandpassFilter(51200.0, 1000, 3000, 3, &filterHandle);
 
 	if (ret != 1)
 	{

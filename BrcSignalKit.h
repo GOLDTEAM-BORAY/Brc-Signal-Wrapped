@@ -276,7 +276,28 @@ extern "C" {
 	int CreateIirHighpassFilter(double sampleRate, double cutoffFrequency, int filterOrder, void** outFilterHandle);
 
 	/// <summary>
-	/// 13-2. 创建FIR高通滤波器
+	/// 13-2. 创建IIR低通滤波器
+	/// </summary>
+	/// <param name="sampleRate"></param>
+	/// <param name="cutoffFrequency"></param>
+	/// <param name="filterOrder"></param>
+	/// <param name="outFilterHandle"></param>
+	/// <returns></returns>
+	int CreateIirLowpassFilter(double sampleRate, double cutoffFrequency, int filterOrder, void** outFilterHandle);
+
+	/// <summary>
+	/// 13-3. 创建IIR带通滤波器
+	/// </summary>
+	/// <param name="sampleRate"></param>
+	/// <param name="lowCutoffFrequency"></param>
+	/// <param name="highCutoffFrequency"></param>
+	/// <param name="filterOrder"></param>
+	/// <param name="outFilterHandle"></param>
+	/// <returns></returns>
+	int CreateIirBandpassFilter(double sampleRate, double lowCutoffFrequency, double highCutoffFrequency, int filterOrder, void** outFilterHandle);
+
+	/// <summary>
+	/// 13-4. 创建FIR高通滤波器
 	/// </summary>
 	/// <param name="sampleRate">信号采样率</param>
 	/// <param name="cutoffFrequency">下限截至频率</param>
@@ -286,7 +307,28 @@ extern "C" {
 	int CreateFirHighpassFilter(double sampleRate, double cutoffFrequency, int taps, void** outFilterHandle);
 
 	/// <summary>
-	/// 13-3. 应用滤波器
+	/// 13-5. 创建FIR低通滤波器
+	/// </summary>
+	/// <param name="sampleRate"></param>
+	/// <param name="cutoffFrequency"></param>
+	/// <param name="taps"></param>
+	/// <param name="outFilterHandle"></param>
+	/// <returns></returns>
+	int CreateFirLowpassFilter(double sampleRate, double cutoffFrequency, int taps, void** outFilterHandle);
+
+	/// <summary>
+	/// 13-6. 创建FIR带通滤波器
+	/// </summary>
+	/// <param name="sampleRate"></param>
+	/// <param name="lowCutoffFrequency"></param>
+	/// <param name="highCutoffFrequency"></param>
+	/// <param name="taps"></param>
+	/// <param name="outFilterHandle"></param>
+	/// <returns></returns>
+	int CreateFirBandpassFilter(double sampleRate, double lowCutoffFrequency, double highCutoffFrequency, int taps, void** outFilterHandle);
+
+	/// <summary>
+	/// 13-7. 应用滤波器
 	/// </summary>
 	/// <param name="handle">滤波器句柄</param>
 	/// <param name="samples">信号点数组</param>
@@ -297,7 +339,7 @@ extern "C" {
 
 
 	/// <summary>
-	/// 13-4. 释放滤波器
+	/// 13-8. 释放滤波器
 	/// </summary>
 	/// <param name="handle">滤波器句柄</param>
 	/// <returns></returns>
