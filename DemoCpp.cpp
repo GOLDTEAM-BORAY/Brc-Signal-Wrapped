@@ -576,7 +576,7 @@ int main()
 	}
 #endif
 
-#if 1
+#if 0
 	const std::string signalPath = "D:\\source\\BrcSignalKit\\Brc.Signal.Tests\\Data\\gobao\\src\\sound_signal.txt";
 	int signalDataLen = 0;
 	double* signalData = ReadDoublesFromFile(signalPath.c_str(), 0, &signalDataLen);
@@ -591,7 +591,7 @@ int main()
 	}
 
 	double* filterdData = nullptr;
-	ret = ApplyFilter(filterHandle, signalData, signalDataLen, &filterdData);
+	ret = ApplyFilter(filterHandle, signalData, signalDataLen, 51200, &filterdData);
 	if (ret != 1)
 	{   
 		const char* errMsg = GetLastErrorMessage(ret);
@@ -616,4 +616,31 @@ int main()
 	Free(filterdData);
 	FreeFilter(filterHandle);
 #endif
+
+#if 1
+	const std::string signalPath = "D:\\source\\BrcSignalKit\\Brc.Signal.Tests\\Data\\gobao\\src\\sound_signal.txt";
+	int signalDataLen = 0;
+	double* signalData = ReadDoublesFromFile(signalPath.c_str(), 0, &signalDataLen);
+
+	SignalNative signalNative = { signalData, signalDataLen, 1.0 / 51200.0, 0 };
+
+	double* resampledData = nullptr;
+	int len = 0;
+	int ret = ResampleSignal(signalNative, 1800, 0.8, &resampledData, &len);
+
+	if (ret != 1)
+	{
+		const char* errMsg = GetLastErrorMessage(ret);
+		std::cerr << "Error: " << errMsg << std::endl;
+	}
+	else
+	{
+		for (size_t i = 0; i < len; ++i)
+		{
+			std::cout << resampledData[i] << std::endl;
+		}
+	}
+
+#endif
+
 }
