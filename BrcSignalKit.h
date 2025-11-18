@@ -357,6 +357,25 @@ extern "C" {
 	int ResampleSignal(SignalNative signalNative, double destSampleRate, double bandRatio, double** outSamples, int* outLength);
 
 	/// <summary>
+	/// 15. 时频阶次
+	/// </summary>
+	/// <param name="signalNative"></param>
+	/// <param name="rpmNative"></param>
+	/// <param name="amplitudeLines"></param>
+	/// <param name="valueLength"></param>
+	/// <param name="orderAxis"></param>
+	/// <param name="orderAxisLen"></param>
+	/// <param name="lineCnt"></param>
+	/// <param name="formatType"></param>
+	/// <param name="weightType"></param>
+	/// <param name="scaleType"></param>
+	/// <param name="spectralLines"></param>
+	/// <param name="increment"></param>
+	/// <param name="referenceValue"></param>
+	/// <returns></returns>
+	int TimeFrequencyDerivedOrder(SignalNative signalNative, RpmNative rpmNative, double** flatAmplitudeValues, int* valueLength, double** orderAxis, int* orderAxisLen, int* lineCnt, int formatType, int weightType, int scaleType, int spectralLines, double increment, double referenceValue);
+
+	/// <summary>
 	/// 截取信号的指定时间段。
 	/// </summary>
 	/// <param name="signalNative">输入的信号数据结构体。</param>
