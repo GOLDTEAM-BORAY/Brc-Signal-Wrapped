@@ -373,7 +373,7 @@ extern "C" {
 	/// <param name="increment"></param>
 	/// <param name="referenceValue"></param>
 	/// <returns></returns>
-	int TimeFrequencyDerivedOrder(SignalNative signalNative, RpmNative rpmNative, double** flatAmplitudeValues, int* valueLength, double** orderAxis, int* orderAxisLen, int* lineCnt, int formatType, int weightType, int scaleType, int spectralLines, double increment, double referenceValue);
+	int TimeFrequencyDerivedOrder(SignalNative signalNative, RpmNative rpmNative, double** flatAmplitudeValues, int* valueLength, double** orderAxis, int* orderAxisLen, int* lineCnt, int formatType, int windowType, int weightType, int scaleType, int spectralLines, double increment, double referenceValue);
 
 	/// <summary>
 	/// 截取信号的指定时间段。
