@@ -40,7 +40,7 @@ extern "C" {
 	int OverallLevelSpectralTacho(SignalNative signalNative, RpmNative rpmNative, int spectrumLines, double lowerRpmThreshold, double upperRpmThreshold, double rpmStep, double referenceValue, int windowType, int weightType, int scaleType, int rpmTriggerType, double** levelData, double** rpmData, int* rpmBins);
 
 	/// <summary>
-	/// 2. 阶次震动和噪声
+	/// 2-1. 阶次震动和噪声
 	/// </summary>
 	/// <param name="signalNative">输入的信号数据结构体。</param>
 	/// <param name="rpmNative">输入的转速数据结构体。</param>
@@ -61,6 +61,30 @@ extern "C" {
 	/// <param name="rpmBins">输出参数，指向转速分箱数量的指针。</param>
 	/// <returns>返回1表示成功，其他值表示错误代码。</returns>
 	int OrderSection(SignalNative signalNative, RpmNative rpmNative, int spectrmmLines, double targetOrder, double orderBandwidth, double lowerRpmThreshold, double upperRpmThreshold, double rpmStep, double referenceValue, int formatType, int windowType, int weightType, int scaleType, int rpmTriggerType, double** outOrderSection, double** outRpmPoints, int* rpmBins);
+
+	/// <summary>
+	/// 2-2. 批量阶次震动和噪声
+	/// </summary>
+	/// <param name="signalNative">输入的信号数据结构体。</param>
+	/// <param name="rpmNative">输入的转速数据结构体。</param>
+	/// <param name="spectrmmLines">谱线数，决定阶次分辨率。</param>
+	/// <param name="targetOrdesr">目标阶次数组指针。</param>
+	/// <param name="targetOrdersLen">目标阶次数组长度。</param>
+	/// <param name="orderBandwidth">阶次带宽。</param>
+	/// <param name="lowerRpmThreshold">转速下限。</param>
+	/// <param name="upperRpmThreshold">转速上限。</param>
+	/// <param name="rpmStep">转速步进，单位为rpm。</param>
+	/// <param name="referenceValue">参考值，仅用于db输出时的参考值。</param>
+	/// <param name="formatType">输出格式类型。 0-RMS 1-Peak 2-Peak to peak</param>
+	/// <param name="windowType">窗函数类型 0-矩形窗 1-Hanning窗</param>
+	/// <param name="weightType">加权类型 0-A计权 1-B计权 2-C计权</param>
+	/// <param name="scaleType">缩放类型 0-线性输出 1-DB输出</param>
+	/// <param name="rpmTriggerType">转速触发类型。0-Up触发 1-Imm. Up触发</param>
+	/// <param name="outOrderSection">输出参数，指向计算得到的阶次区段数据的指针。</param>
+	/// <param name="outRpmPoints">输出参数，指向对应转速点的指针。</param>
+	/// <param name="rpmBins">输出参数，指向转速分箱数量的指针。</param>
+	/// <returns>返回1表示成功，其他值表示错误代码。</returns>
+	int OrderSectionBulk(SignalNative signalNative, RpmNative rpmNative, int spectrmmLines, double* targetOrders, int targetOrdersLen, double orderBandwidth, double lowerRpmThreshold, double upperRpmThreshold, double rpmStep, double referenceValue, int formatType, int windowType, int weightType, int scaleType, int rpmTriggerType, double** outOrderSection, double** outRpmPoints, int* rpmBins);
 
 	/// <summary>
 	/// 3. 振动和噪声RMS
@@ -373,7 +397,7 @@ extern "C" {
 	/// <param name="increment"></param>
 	/// <param name="referenceValue"></param>
 	/// <returns></returns>
-	int TimeFrequencyDerivedOrder(SignalNative signalNative, RpmNative rpmNative, double** flatAmplitudeValues, int* valueLength, double** orderAxis, int* orderAxisLen, int* lineCnt, int formatType, int windowType, int weightType, int scaleType, int spectralLines, double increment, double referenceValue);
+	int TimeFrequencyDerivedOrder(SignalNative signalNative, RpmNative rpmNative, double** flatAmplitudeValues, int* valueLength, double** orderAxis, int* orderAxisLen, int* lineCnt, int formatType, int weightType, int scaleType, int spectralLines, double increment, double referenceValue);
 
 	/// <summary>
 	/// 截取信号的指定时间段。
